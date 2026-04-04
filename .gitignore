@@ -1,0 +1,16 @@
+*.pdf
+*.html
+
+output
+build
+.secret
+
+*.pyc
+__pycache__/
+.mypy_cache/
+*.zip
+*~
+*.sw[po]
+*.db
+Desktop.ini
+.DS_Store

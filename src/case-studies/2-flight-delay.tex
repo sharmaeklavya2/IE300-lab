@@ -1,0 +1,291 @@
+\input{src/header.tex}
+
+\newcommand*{\nhat}{\widehat{n}}
+\newcommand*{\textCP}[2]{\Pr(\text{#1} \mid #2)}
+
+\title{IE 300 Case Study 2: Predicting Flight Delays}
+\author{\empty}
+\date{\empty}
+
+\begin{document}
+
+\maketitle
+%\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.1em}
+
+\section{Objectives}
+
+The purpose of this study is to develop a very popular predictive model called Naive-Bayes.
+You will use Python as a tool to analyze data of flight delays in order to determine the likelihood of delays.
+Through this case study, you will learn how to:
+\begin{tightenum}
+\item Read and analyze data using Python.
+\item Apply the concepts of conditional probability and Bayes' theorem.
+\item Develop a simple Naive-Bayes classifier model with $m$-estimates.
+\end{tightenum}
+
+\section{Predicting Delays}
+
+As any frequent flier knows, flight delays are an inevitable part of commercial air travel.
+In the previous case study, you were able to determine which airline is the fastest for a particular route.
+In doing so, you had to take into account departure and arrival delays of each airline.
+While the cause for delays are largely unpredictable, we can get some insights on
+which flights are more likely to be delayed without taking weather conditions into consideration.
+
+An obvious predictor of delays is the airline itself.
+For example, in 2014, only 74.34\% of American Airline’s flights were on-time
+while Delta had a 85.21\% on-time record \cite{skift2014worlds}.
+How can we use historical data to make predictions about delays?
+You may have already learned about several predictive models such as ordinary least-squares.
+We will study a very popular model in statistics and machine learning called Naive-Bayes.
+
+\subsection{Naive Bayes Classifier}
+
+Recall that Bayes' theorem tells you the probability of an event based on
+conditions possibly related to that event. That is, given events $A$ and $B$, we have
+\begin{equation}
+\Pr(A \mid B) = \frac{\Pr(A)\Pr(B \mid A)}{\Pr(B)}.
+\end{equation}
+
+The Naive-Bayes classifier is based on Bayes' theorem with the assumption of independence between attributes.
+Suppose we have a vector $X = (x_1, x_2, \ldots, x_n)$ representing $n$ \textbf{attributes}
+(independent variables). The Naive-Bayes' classifier helps us compute $\Pr(C_k \mid X)$,
+where $C_1$, $C_2$, $\ldots$, represent possible outcomes (\textbf{classes}).
+
+If we are trying to decide whether a particular flight is likely to be delayed,
+the outcome would be from the set $\{Y, N\}$, corresponding to the
+flight being delayed ($Y$) or not ($N$).
+The vector $X$ would contain information about the flight
+(e.g., airline, origin airport, destination airport)
+that could give us some insight into which class ($Y$ or $N$) will occur.
+One approach to predicting the class is to pick the value $C_k$ that is most probable,
+given that we know the values of the attributes.
+In other words, we pick the $C_k$ that maximizes $\Pr(C_k \mid X)$.
+Since the vector $X$ is known, and $\Pr(C_k \mid X) = \Pr(C_k \cap X)/\Pr(X)$
+by the definition of conditional probability,
+we get that $\Pr(X)$ will be the same for all possible classes,
+and we can instead focus on selecting the class that maximizes $\Pr(C_k \cap X)$.
+We call $\Pr(C_k \cap X)$ the \textbf{score} for class $C_k$,
+and we call $\Pr(C_k \mid X)$ the \textbf{posterior probability} for class $C_k$.
+
+Noting that the attribute vector $X$ typically contains values of several attributes,
+we can rewrite $\Pr(C_k \cap X)$ as $\Pr(C_k \cap x_1 \cap x_2 \cap \ldots \cap x_n)$,
+where the event $x_i$ tells us the value of attribute $i$.
+In practice, the symbol $\cap$ is often replaced with a comma when intersecting many events.
+By repeatedly applying the definition of conditional probability, we get
+\begin{align}
+\Pr(C_k \cap X) &= \Pr(C_k)\Pr(X \mid C_k) \nonumber
+\\ &= \Pr(C_k)\Pr(x_1 \cap \ldots \cap x_n \mid C_k) \nonumber
+\\ &= \Pr(C_k)\Pr(x_1 \mid C_k)\Pr(x_2 \cap \ldots \cap x_n \mid C_k) \nonumber
+\\ &\quad\vdots \nonumber
+\\ &= \Pr(C_k)\Pr(x_1 \mid C_k)\Pr(x_2 \mid C_k \cap x_1)
+    \ldots\Pr(x_n \mid C_k \cap x_1 \cap ... \cap x_{n-1}).
+    \label{eq:prob-prod}
+\end{align}
+
+This decomposes $\Pr(C_k \cap X)$ into a product of the probability of outcome $C_k$
+and conditional probabilities of each attribute.
+We assume conditional independence between the attributes (hence, the ``naive'' portion of the name).
+That is,
+\begin{equation}
+\Pr\bigg(x_i \Bigm\vert C_k \cap \bigg(\bigcap_{j \neq i} x_j\bigg)\bigg) = \Pr(x_i \mid C_k)
+\end{equation}
+for all $i \in \{1, 2, \ldots, n\}$.
+This allows us to discard all conditions except $C_k$ in equation \eqref{eq:prob-prod}.
+Hence, the equation simplifies to
+\begin{equation}
+\label{eq:naive-prod}
+\Pr(C_k \cap X) = \Pr(C_k)\prod_{i=1}^n \Pr(x_i \mid C_k).
+\end{equation}
+
+With this definition, we can define a \textbf{classifier} (a decision rule).
+A common classifier is to pick the most probable class, as discussed above.
+This is called the \textbf{maximum a posterior} (MAP) rule, which assigns the label
+\begin{equation}
+\argmax_k \;\Pr(C_k)\prod_{i=1}^n \Pr(x_i \mid C_k).
+\end{equation}
+
+\subsection{\texorpdfstring{\boldmath $m$}{m}-Estimates}
+
+The conditional densities $\Pr(x_i \mid C_k)$ can be defined in different ways (e.g., Normal, Poisson)
+depending on the problem. If our dataset is small, we often do not know the underlying distributions.
+When the attribute $x_i$ is discrete, an intuitive way to estimate $\Pr(x_i \mid C_k)$ is to define
+\begin{equation}
+\Pr(x_i \mid C_k) = \frac{\nhat}{n}.
+\end{equation}
+Here $\nhat$ is the number of observations where the class is $C_k$ and the $i\Th$ attribute is $x_i$,
+and $n$ is the number of observations where the class is $C_k$.
+However, for small datasets, we may find that $\nhat = 0$ or $n = 0$, which is a problem.
+A way to avoid this problem is to use $m$-estimates.
+\begin{equation}
+\Pr(x_i \mid C_k) = \frac{\nhat + mp}{n + m}.
+\end{equation}
+Here $m$ is called the \emph{equivalent sample size} and $p$ is the \emph{prior estimate} of $\Pr(x_i \mid C_k)$.
+A typical choice for $p$ is $1/(\text{no.\ of possible values for attribute } i)$, which assumes that
+all attribute values are equally likely.
+The idea behind $m$-estimates is to pretend we have $m$ extra observations with
+class $C_k$, with $m \cdot p$ of them having the $i\Th$ attribute $x_i$.
+Essentially, $m$ says how confident we are of our prior estimate $p$,
+since as $m$ increases, we have $\Pr(x_i \mid C_k) \to p$.
+
+Thus, we can compute $\Pr(x_i \mid C_k)$ for each attribute $x_i$,
+and then we can compute the score of class $C_k$ using equation \eqref{eq:naive-prod}.
+
+\subsection{Posterior Probabilities}
+
+To compute the posterior probability $\Pr(C_k \mid X)$, we use the fact that
+posterior probabilities of all classes must sum to 1, i.e.,
+\begin{equation}
+\sum_k \Pr(C_k \mid X) = 1.
+\end{equation}
+Since $\Pr(C_k \mid X) = \Pr(C_k \cap X)/\Pr(X)$ for each class $C_k$, we get
+\begin{equation}
+\Pr(X) = \sum_k \Pr(C_k \cap X).
+\end{equation}
+
+Hence, one can compute posterior probabilities as follows:
+\begin{tightenum}
+\item For each class $C_k$, compute the score $\Pr(C_k \cap X)$.
+\item Sum the scores of all classes to obtain $\Pr(X)$.
+\item Divide the score of each class $C_k$ by $\Pr(X)$ to obtain the posterior probability $\Pr(C_k \mid X)$.
+\end{tightenum}
+
+\section{Example 1}
+
+Consider the following table containing information of delays.
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+\# & Origin & Destination & Airline & Delay
+\\ \midrule
+1 & DFW & ORD & Delta & Y \\
+2 & DFW & ORD & Delta & N \\
+3 & DFW & ORD & Delta & Y \\
+4 & LAX & ORD & Delta & N \\
+5 & LAX & ORD & United & Y \\
+6 & LAX & LGA & United & N \\
+7 & LAX & LGA & United & Y \\
+8 & LAX & LGA & Delta & N \\
+9 & DFW & LGA & United & N \\
+10& DFW & ORD & United & Y \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The class is the variable Delay and the attributes are Origin, Destination and Airline.
+Classify DFW-LGA on Delta using Naive-Bayes with MAP and $m$-estimates. Assume $m = 3$.
+
+First, note that DFW-LGA on Delta is not contained in the table.
+However, we can compute the delay scores for this flight using equation \eqref{eq:naive-prod}.
+Using an equivalent sample size of $m = 3$, we compute the relevant conditional probabilities as follows:
+\begin{align*}
+\textCP{DFW}{Y} &= \frac{3 + 3/2}{5 + 3} = \frac{9}{16} = 0.5625
+& \textCP{DFW}{N} &= \frac{2 + 3/2}{5 + 3} = \frac{7}{16} = 0.4375
+\\ \textCP{LGA}{Y} &= \frac{1 + 3/2}{5 + 3} = \frac{5}{16} = 0.3125
+& \textCP{LGA}{N} &= \frac{3 + 3/2}{5 + 3} = \frac{9}{16} = 0.5625
+\\ \textCP{Delta}{Y} &= \frac{2 + 3/2}{5 + 3} = \frac{7}{16} = 0.4375
+& \textCP{Delta}{N} &= \frac{3 + 3/2}{5 + 3} = \frac{9}{16} = 0.5625
+\end{align*}
+
+For $\textCP{DFW}{Y}$, we have 5 observations where $\text{Delay} = Y$,
+of which three observations have $x_i = \text{DFW}$. Thus, $n = 5$ and $\nhat = 3$.
+Origin takes two possible values (DFW and LAX), so $p = 1/2$.
+Since each of $Y$ and $N$ occur in 5 of the 10 observations, we have $\Pr(Y) = \Pr(N) = 0.5$.
+On applying equation \eqref{eq:naive-prod}, we get the scores of $Y$ and $N$:
+\begin{align*}
+\Pr(Y \cap (\text{DFW, LGA, Delta})) &= \Pr(Y)\textCP{DFW}{Y}\textCP{LGA}{Y}\textCP{Delta}{Y}
+    \\ &= \frac{1}{2}\cdot\frac{9}{16}\cdot\frac{5}{16}\cdot\frac{7}{16}
+    = \frac{315}{8192} \approx 0.0385.
+\\ \Pr(N \cap (\text{DFW, LGA, Delta})) &= \Pr(N)\textCP{DFW}{N}\textCP{LGA}{N}\textCP{Delta}{N}
+    \\ &= \frac{1}{2}\cdot\frac{7}{16}\cdot\frac{9}{16}\cdot\frac{9}{16}
+    = \frac{567}{8192} \approx 0.0692.
+\end{align*}
+Since $N$ has a larger score, we classify DFW-LGA on Delta as $N$,
+i.e., we predict that the flight from DFW to LGA on Delta is likely to not be delayed.
+
+Moreover, the posterior probabilities are:
+\begin{align*}
+\Pr(Y \mid \text{DFW, LGA, Delta}) &= \frac{315}{315 + 567} = \frac{5}{14} \approx 0.357,
+\\ \Pr(N \mid \text{DFW, LGA, Delta}) &= \frac{567}{315 + 567} = \frac{9}{14} \approx 0.643.
+\end{align*}
+
+\section{Exercise 1}
+
+Using the following table, will the flight SEA-ATL on Southwest with good weather be delayed?
+Use $m$-estimates for the conditional probabilities with $m = 4$.
+
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+\# & Origin & Destination & Airline & Weather & Delay
+\\ \midrule
+1 & SEA & ATL & WN & Poor & N \\
+2 & SEA & BOS & AA & Good & Y \\
+3 & SEA & ATL & UN & Poor & Y \\
+4 & SFO & BOS & WN & Poor & Y \\
+5 & SFO & ATL & AA & Good & N \\
+6 & SFO & BOS & UN & Poor & Y \\
+7 & SFO & BOS & UN & Good & N \\
+8 & SEA & BOS & WN & Poor & Y \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Real World Data}
+
+Let us now use real historical flight data to predict flight delays.
+The dataset \texttt{FlightDelay.csv} contains 2,346 observations of flights
+departing from JFK or SFO to ATL, LAS or ORD in November 2015.
+There are 5 variables.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Variable Name & Description
+\\ \midrule
+Carrier & IATA Carrier identification \\
+Origin & Origin airport \\
+Destination & Destination airport \\
+Depature Delay & Difference between scheduled and actual departure time (minutes) \\
+Arrival Delay & Difference between scheduled and actual arrival time (minutes) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Exercise 2}
+
+Using \texttt{FlightDelay.csv}, write Python code to perform the following:
+
+\begin{enumerate}[label=(\alph*)]
+\item Read the dataset.
+\item Compute the total delay time for each flight.
+    The total delay time is the sum of departure delay and arrival delay time.
+\item Assign any flight with total delay time greater than 15 minutes with $Y$ for being delayed.
+    Otherwise, the flight is not delayed and is assigned $N$.
+\end{enumerate}
+
+\subsection{Exercise 3}
+
+Using your Python code from the previous exercise, for each of the following flights,
+compute the probabilities of delay and not delay given the route and carrier
+and then classify whether the flight is delayed using Naive-Bayes (assume $m = 3$).
+
+\begin{enumerate}[noitemsep,label=(\alph*)]
+\item JFK-LAS on American Airlines (AA).
+\item JFK-LAS on JetBlue (B6).
+\item SFO-ORD on Virgin Airlines (VX).
+\item SFO-ORD on Southwest Airlines (WN).
+\end{enumerate}
+
+Specifically, your output should contain:
+\begin{enumerate}[noitemsep]
+\item $\Pr(\text{Delay} \mid \text{Origin, Destination, Carrier})$.
+\item $\Pr(\text{Not delay} \mid \text{Origin, Destination, Carrier})$.
+\item Classification of whether the flight is delayed or not.
+\end{enumerate}
+
+\bibPrep{}  % \bibPrep is defined in header.tex
+\bibliography{src/bibdb}
+
+\end{document}

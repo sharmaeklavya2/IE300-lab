@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+%\usepackage{url}
+%\usepackage{float}
+%\usepackage{array}
+\usepackage{comment}
+\usepackage{booktabs}
+%\usepackage{tikz}
+%\usetikzlibrary{decorations.pathreplacing,arrows.meta,calc,patterns}
+\usepackage{enumitem}
+%\usepackage{csvsimple}
+\usepackage{hyperref}
+%\usepackage{algorithm,algpseudocode}
+
+% colors
+\colorlet{textColor}{black}
+\colorlet{bgColor}{white}
+\colorlet{textRed}{red!50!black}
+\colorlet{textGreen}{green!50!black}
+\colorlet{textBlue}{blue!50!black}
+\colorlet{textHeavy}{black}
+\colorlet{dimColor}{textColor!50!bgColor}
+
+\hypersetup{
+colorlinks,linkcolor=textRed,citecolor=textRed,urlcolor=textBlue,
+hypertexnames=false,bookmarksnumbered=true,final
+}
+
+% macros
+\newcommand*{\Th}{^{\textrm{th}}}
+\newcommand*{\abs}[1]{\lvert #1 \rvert}
+\DeclareMathOperator*{\E}{\mathbb{E}}
+%\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\renewcommand*{\Pr}{\operatorname{\mathrm{P}}}
+
+% wrap URLs
+\Urlmuskip=0mu plus 0.1mu
+\makeatletter
+\g@addto@macro{\UrlBreaks}{%
+\do\/%
+\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m%
+\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
+\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M%
+\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
+\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9%
+}
+\makeatother
+
+% tighter lists
+\newenvironment*{tightemize}{\begin{itemize}[noitemsep]}{\end{itemize}}%
+\newenvironment*{tightenum}{\begin{enumerate}[noitemsep]}{\end{enumerate}}%
+
+% customizations
+\allowdisplaybreaks
+%\defaultaddspace=0.0em  % spacing in tables
+
+\newcommand*{\bibPrep}{
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{plainurl}
+}
