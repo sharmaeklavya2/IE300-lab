@@ -1,0 +1,11 @@
+Origin,Destination,Airline,Delay
+DFW,ORD,Delta,Y
+DFW,ORD,Delta,N
+DFW,ORD,Delta,Y
+LAX,ORD,Delta,N
+LAX,ORD,United,Y
+LAX,LGA,United,N
+LAX,LGA,United,Y
+LAX,LGA,Delta,N
+DFW,LGA,United,N
+DFW,ORD,United,Y

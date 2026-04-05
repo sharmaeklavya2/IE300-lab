@@ -1,0 +1,9 @@
+Origin,Destination,Airline,Weather,Delay
+SEA,ATL,WN,Poor,N
+SEA,BOS,AA,Good,Y
+SEA,ATL,UN,Poor,Y
+SFO,BOS,WN,Poor,Y
+SFO,ATL,AA,Good,N
+SFO,BOS,UN,Poor,Y
+SFO,BOS,UN,Good,N
+SEA,BOS,WN,Poor,Y

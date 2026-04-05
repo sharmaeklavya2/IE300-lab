@@ -152,7 +152,8 @@ Hence, one can compute posterior probabilities as follows:
 
 \section{Example 1}
 
-Consider the following table containing information of delays.
+Consider the following table (also available as \texttt{flight-delay.example.csv})
+containing information of delays.
 
 \begin{center}
 \begin{tabular}{ccccc}
@@ -173,7 +174,7 @@ Consider the following table containing information of delays.
 \end{tabular}
 \end{center}
 
-The class is the variable Delay and the attributes are Origin, Destination and Airline.
+The class is the variable Delay and the attributes are Origin, Destination, and Airline.
 Classify DFW-LGA on Delta using Naive-Bayes with MAP and $m$-estimates. Assume $m = 3$.
 
 First, note that DFW-LGA on Delta is not contained in the table.
@@ -212,7 +213,8 @@ Moreover, the posterior probabilities are:
 
 \section{Exercise 1}
 
-Using the following table, will the flight SEA-ATL on Southwest with good weather be delayed?
+Using the following table (also available as \texttt{flight-delay.small.csv}),
+will the flight SEA-ATL on Southwest with good weather be delayed?
 Use $m$-estimates for the conditional probabilities with $m = 4$.
 
 \begin{center}
@@ -235,7 +237,7 @@ Use $m$-estimates for the conditional probabilities with $m = 4$.
 \section{Real World Data}
 
 Let us now use real historical flight data to predict flight delays.
-The dataset \texttt{FlightDelay.csv} contains 2,346 observations of flights
+The dataset \texttt{flight-delay.large.csv} contains 2,346 observations of flights
 departing from JFK or SFO to ATL, LAS or ORD in November 2015.
 There are 5 variables.
 
@@ -255,7 +257,7 @@ Arrival Delay & Difference between scheduled and actual arrival time (minutes) \
 
 \subsection{Exercise 2}
 
-Using \texttt{FlightDelay.csv}, write Python code to perform the following:
+Using \texttt{flight-delay.large.csv}, write Python code to perform the following:
 
 \begin{enumerate}[label=(\alph*)]
 \item Read the dataset.
