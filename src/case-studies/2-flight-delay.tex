@@ -288,4 +288,70 @@ Specifically, your output should contain:
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
 
+\newpage
+\section{Grading Rubric (40 points)}
+
+For programming problems, students must submit both the code and the output.
+
+\subsection{Exercise 1 (11 points)}
+
+\begin{enumerate}
+\item For each label (Y or N), showing your work and using the correct formula gives 5 points
+    (1 for each multiplicative term).
+\item Showing how to use the scores (or probabilities) to obtain the correct prediction gives 1 point.
+\end{enumerate}
+
+\subsection{Exercise 2 (3 points)}
+
+\begin{enumerate}
+\item Read the dataset: 1 point
+\item Compute the total delay time: 1 point
+\item Assign Y or N label: 1 point
+\end{enumerate}
+
+\subsection{Exercise 3 (26 points)}
+
+The official solution uses functions to avoid repetition of code.
+(E.g., it has a function called `predict`, which takes
+a flight's details (source, destination, airline) as input
+and displays the posterior probabilities and the prediction.
+This avoids repeating the code for each of the 4 inputs (a) to (d).)
+
+The rubric below is written with the official solution in mind,
+but students are free to follow a different outline.
+Specifically, there is no penalty for code repetition;
+points will simply be split across each repetition.
+
+\begin{enumerate}
+\item 11 points for code that computes appropriate aggregations:
+    \begin{tightenum}
+    \item 2 points to compute aggregations needed for $n$.
+    \item 6 points to compute aggregations needed for $\widehat{n}$.
+    \item 3 points to compute aggregations needed for $p$.
+    \end{tightenum}
+\item 9 points for code that uses aggregates to compute scores:
+    \begin{tightenum}
+    \item 2 points for the $P(C_k)$ term.
+    \item 4 points for the correct numerator of the $P(x_i \mid C_k)$ term.
+    \item 2 points for the correct denominator of $P(x_i \mid C_k)$ term.
+    \item 1 point to combine these terms to get the scores for each label.
+    \end{tightenum}
+\item 2 points for code that uses the scores to compute posterior probabilities.
+\item 4 points for outputs. For each of the 4 inputs (a) to (d):
+    \begin{tightenum}
+    \item 0.5 point for the correct posterior probabilities of Y and N.
+    \item 0.5 point for the correct prediction (Delayed or Not delayed).
+    \end{tightenum}
+\end{enumerate}
+
+\subsection{Extra credit}
+
+\begin{enumerate}
+\item 2 points for not hard-coding the number and names of input columns.
+    This makes it easy to adapt the solution to different datasets.
+\item For datasets with a very large number of rows, most operations take a very long time.
+    Avoiding needless repetition can considerably speed up computation.
+    2 points will be awarded to code that is close to optimal in terms of number of passes over data.
+\end{enumerate}
+
 \end{document}
