@@ -50,10 +50,8 @@ def buildTex(inPath: str, outPath: str, *, buildDir: str | None, hasBib: bool, r
         for _ in range(reps):
             myCmdRun(pdflatexCmdLine, dryRun)
     except subprocess.CalledProcessError as e:
-        print(e, file=sys.stderr)
-        print('command:', shlex.join(pdflatexCmdLine), file=sys.stderr)
-        logPath = os.path.join(buildDir, jobName + '.log')
-        print(f'See {logPath} for details.', file=sys.stderr)
+        print(f'Subprocess exited with return code {e.returncode}.', file=sys.stderr)
+        print('Command:', shlex.join(e.cmd), file=sys.stderr)
         return False
 
     outDir = os.path.dirname(outPath) if outPath.endswith('.pdf') else outPath
