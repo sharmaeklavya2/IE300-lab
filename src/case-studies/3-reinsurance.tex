@@ -1,0 +1,240 @@
+\documentclass[12pt]{article}
+
+\input{src/header.tex}
+
+\graphicspath{{../../build/case-studies/3-reinsurance-plots/}}
+\newcommand*{\Xbar}{\overline{X}}
+\newcommand*{\Ncal}{\mathcal{N}}
+\DeclareMathOperator{\Exp}{Exp}
+
+\tcbuselibrary{theorems, skins, breakable}
+\newtheorem{exercise}{Exercise}
+
+\tcbset{colback=textColor!5!bgColor, frame empty, colupper=textColor}
+% \newtcbtheorem[number within=section]{exercise}{Exercise}{mytheoremstyle}{exe}
+
+\title{IE 300 Case Study 3:\\Heavy-Tailed Distribution and Reinsurance Rate-Making}
+\author{\empty}
+\date{\empty}
+
+\begin{document}
+
+\maketitle
+%\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.2em}
+
+The purpose of this case study is to give a brief introduction to a heavy-tailed distribution
+and its distinct behaviors in contrast with familiar light-tailed distributions in standard texts.
+You will learn about QQ-plot, which is a popular tool for checking goodness-of-fit for
+a particular statistical model. You will also work on a real-life application of heavy-tailed
+distributions in reinsurance rate-making.
+
+Reinsurance is a very important component of the global financial market.
+It allows insurers to take on risks that they would otherwise not be able to.
+Did you know that NASA buys insurance contracts for every rocket it launches
+and every satellite and probe it sends to the outer space?
+These equipments are so expensive that typical insurers would not be able to cover on their own.
+Therefore, they can go to the reinsurance market, slide up the coverage and
+transfer partial coverage to reinsurers that exceed their financial capabilities.
+By the end of this case study, you will be able to learn basic principles of pricing a reinsurance contract.
+
+\textbf{Learning objectives}:
+
+\begin{tightenum}
+\item Visualize the concepts in the Central Limit Theorem.
+\item Identify cases where the Central Limit Theorem does not apply.
+\item Reinforce the concept of cumulative distribution function.
+\item Understand why and how QQ-plot works for the assessment of goodness-of-fit.
+\item Reinforce the concepts of conditional probability and conditional expectation.
+\item Apply basic integration technique to compute mean excess function.
+\item Learn about behaviors of a heavy-tailed distribution.
+\item Learn how to use order statistics to estimate quantiles and mean excess function.
+\item Develop intuition behind point estimators.
+\end{tightenum}
+
+\newpage
+
+\section{Central Limit Theorem}
+
+This section is to provide visualization of central limit theorem which you should already be familiar with.
+We provide examples for both discrete random variables and continuous random variables.
+
+\subsection{Bernoulli Random Variables}
+\label{sec:bernoulli}
+
+Suppose we are given a potentially biased coin, i.e.,
+a coin that may not have an equal chance of landing on a head or a tail.
+We would like to estimate the probability of getting a head.
+
+We can do so by counting the number of heads in a sequence of coin tosses.
+Suppose we toss the coin $n$ times. For every $i$ from 1 to $n$, let $X_i$ be a random variable:
+1 if the $i\Th$ coin shows heads and 0 otherwise.
+Let $p$ the probability of a head and $q=1-p$ be the probability of a tail.
+Then $X_i \sim \mathrm{Bernoulli}(p)$, i.e., $X_i$ is a Bernoulli random variable with parameter $p$.
+Its probability mass function is given by
+\[ \Pr(X_i = x) = \begin{cases}p & \text{ if } x = 1 \\ q & \text{ if } x = 0\end{cases}. \]
+
+The total number of heads in $n$ tosses is given by
+\[ S_n \defeq \sum_{i=1}^n X_i. \]
+Then $S_n \sim \mathrm{Binomial}(n, p)$, i.e., $S_n$ is a binomial random variable
+with parameters $n$ and $p$. Its probability mass function is given by
+\[ \Pr(S_n = x) = \binom{n}{x}p^xq^{n-x}, \qquad x \in \{0, 1, \ldots, n\}. \]
+
+The random variable
+\[ \Xbar_n \defeq \frac{1}{n}S_n \]
+is called the \emph{sample average}.
+What are the mean and variance of $\Xbar_n$?
+To find them, we will use the following result.
+
+\begin{theorem}
+\label[theorem]{thm:randvar-scaling}
+For any real numbers $a$ and $b$, and random variable $Z$, we have
+\begin{align*}
+\E[aZ+b] &= a\E[Z]
+& \Var[aZ+b] &= a^2\Var[Z]
+\end{align*}
+\end{theorem}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{binom1.pdf}
+\caption{Probability mass function of $\Xbar_n$ for $p = 0.3$.}
+\label{fig:binom1}
+\end{figure}
+
+Using \cref{thm:randvar-scaling}, we get
+\[ \E[\Xbar_n] = \E[S_n]/n = p, \quad \text{and} \]
+\[ \Var[\Xbar_n] = \Var\left[\frac{S_n}{n}\right] = \frac{\Var[S_n]}{n^2} = \frac{pq}{n}. \]
+Since $\E[\Xbar_n] = p$, $\Xbar_n$ is an unbiased estimator of $p$.
+Moreover, when $n$ is large, the variance of $\Xbar_n$ is small,
+so $\Xbar_n$ is a good estimator of $p$.
+
+Suppose that we have an unfair coin with $p = 0.3$.
+\Cref{fig:binom1} shows the probability mass functions of the sample average $\Xbar_n$,
+where the number of coin tosses $n \in \{1, 2, 3, 10, 20, 50\}$.
+Since $p < 0.5$, we are more likely to see a smaller number of heads
+than that of tails in any given $n$ tosses.
+In general, the probability mass function of $\Xbar_n$ tends to skew towards to the right.
+However, as one can see in the plots in \cref{fig:binom1},
+the probability mass function becomes more and more symmetric as $n$ gets bigger and bigger.
+This phenomenon arises for any $p \in (0, 1)$, no matter how extreme $p$ is.
+Why is this happening? The answer is the Central Limit Theorem, which we have already learned in class.
+
+The Central limit theorem tells us that $\Xbar_n$ is approximately normally distributed for large $n$,
+i.e., $\Xbar_n$'s distribution is approximately $\Ncal(p, \frac{pq}{n})$.
+
+Let us numerically verify it.
+In \cref{fig:binom2}, for $p = 0.3$ and different values of $n$,
+we plot the probability density function of $\Ncal(p, \frac{pq}{n})$ in dashed red,
+and we plot $n$ times the probability mass function of $\Xbar_n$ in blue.
+We can see that as $n$ increases, the two curves match up quite well.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{binom2.pdf}
+\caption{Probability mass function of $\Xbar_n$ for $p = 0.3$ vs normal distribution}
+\label{fig:binom2}
+\end{figure}
+
+\subsection{Exponential Random Variables}
+
+Let us now trying applying the Central limit theorem to the exponential distribution.
+Let $X_1$, \ldots, $X_n$ be $n$ independent random variables such that for
+all $i$ from $1$ to $n$, we have $X_i \sim \Exp(\lambda)$,
+i.e., $X_i$ is exponentially distributed with parameter $\lambda$.
+Recall that the probability density function of
+an exponential random variable with parameter $\lambda$ is
+\[ f(x) = \lambda e^{-\lambda x}, \quad x \ge 0, \]
+and the cumulative distribution function is
+\[ F(x) = 1 - e^{-\lambda x}, \quad x \ge 0, \]
+the mean is $1/\lambda$, and the variance is $1/\lambda^2$.
+
+Define $S_n$ and $\Xbar_n$ just like before:
+\begin{align*}
+S_n &\defeq \sum_{i=1}^n X_i,
+& \Xbar_n &\defeq \frac{1}{n}S_n.
+\end{align*}
+
+Let us now find the mean and variance of $\Xbar_n$.
+In \cref{sec:bernoulli}, we knew the distribution of $S_n$.
+Here it's not so easy to see how $S_n$ might be distributed.
+The following result can help us find $\Xbar_n$
+without first finding out the distribution of $S_n$.
+
+\begin{theorem}
+\label[theorem]{thm:randvar-lincomb}
+Let $Y_1, \ldots, Y_n$ be $n$ independent random variables.
+Let $Z \defeq Y_1 + \ldots + Y_n$. Then
+\begin{align*}
+\E[Z] &= \sum_{i=1}^n \E[Y_i],
+& \Var[Z] = \sum_{i=1}^n \Var[Y_i].
+\end{align*}
+\end{theorem}
+
+% \begin{exercise}{}{exe:exp:mean-var}
+% \end{exercise}
+\begin{tcolorbox}
+\begin{exercise}
+\label{exe:exp:mean-var}
+Show that
+\begin{enumerate}[label=(\alph*)]
+\item $\E[\Xbar_n] = 1/\lambda$.
+\item $\Var[\Xbar_n] = 1/(n\lambda^2)$.
+\end{enumerate}
+\end{exercise}
+\end{tcolorbox}
+
+The central limit theorem tells us that $\Xbar_n$ is approximately
+normally distributed when $n$ is large.
+By the results of \cref{exe:exp:mean-var}, we get that
+$\Xbar_n$ is distributed roughly as $\Ncal(1/\lambda, 1/(n\lambda^2))$.
+
+Let us try to verify the central limit theorem for $\Xbar_n$ numerically.
+
+\begin{tcolorbox}
+\begin{exercise}
+\label{exe:exp:y-distr}
+It can be shown that the probability density function of $S_n$ is given by
+\[ f_{S_n}(x) = \frac{\lambda^n}{(n-1)!}x^{n-1}e^{-\lambda x}, \quad x \ge 0. \]
+Define
+\[ Y_n \defeq \frac{\Xbar_n - \E[\Xbar_n]}{\sqrt{\Var[\Xbar_n]}} = \frac{\lambda S_n - n}{\sqrt{n}}. \]
+Show that the probability density function of $Y_n$ is
+\[ f_{Y_n}(y) = \frac{\sqrt{n}}{(n-1)!}\left(n + y\sqrt{n}\right)^{n-1} \exp\left(-(n + y\sqrt{n})\right),
+    \quad y \ge -\sqrt{n}. \]
+\textbf{Hint}:
+$F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.
+\end{exercise}
+\end{tcolorbox}
+
+By the central limit theorem, $\Xbar_n$ should be distributed approximately $\Ncal(\E[\Xbar_n], \Var[\Xbar_n])$.
+Thus, $Y_n$ should be distributed approximately $\Ncal(0, 1)$.
+Since we found the true distribution of $Y_n$ in \cref{exe:exp:y-distr},
+let us plot it against the standard normal distribution to see
+how well the central limit theorem holds.
+
+\begin{tcolorbox}
+\begin{exercise}
+\label{exe:exp:y-plot}
+Use \texttt{matplotlib.pyplot} to plot all of following functions in the same figure:
+\begin{enumerate}
+\item For $n \in \{1, 3, 10, 30, 100\}$, plot $f_{Y_n}(y)$ for $-4 \le y \le 4$.
+    ($f_{Y_n}(y)$ is $0$ for $y < -\sqrt{n}$.)
+\item Plot the standard normal distribution's density function on the interval $[-4, 4]$ as a dashed line.
+    (You can use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
+    \texttt{scipy.stats.norm.pdf(x)}} to get the standard normal distribution's PDF at $x$.)
+\end{enumerate}
+Ensure your curves are properly labeled with a legend.
+\end{exercise}
+\end{tcolorbox}
+
+In general, we can conclude that Central Limit Theorem tells us that the distribution of
+an average tends to be Normal, even when the distribution from which the average is computed is non-Normal.
+However, there are certain cases in which the average deviates from Normal behavior.
+When does the Central Limit Theorem not hold?
+
+\bibPrep{}  % \bibPrep is defined in header.tex
+\bibliography{src/bibdb}
+
+\cite{hill1975simple}
+
+\end{document}
