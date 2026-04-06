@@ -4,15 +4,22 @@
 
 \graphicspath{{../../build/case-studies/3-reinsurance-plots/}}
 \newcommand*{\Xbar}{\overline{X}}
+\newcommand*{\Dcal}{\mathcal{D}}
 \newcommand*{\Ncal}{\mathcal{N}}
+\newcommand*{\Qhat}{\widehat{Q}}
 \DeclareMathOperator{\Exp}{Exp}
 
 \tcbuselibrary{theorems, skins, breakable}
 \newtheorem{exercise}{Exercise}
 
+\colorlet{mathExeBgColor}{blue!6!bgColor}
+\colorlet{progExeBgColor}{orange!10!bgColor}
+\colorlet{mathExeSec}{textColor!70!blue!40!bgColor}
+\colorlet{progExeSec}{textColor!70!orange!45!bgColor}
 \tcbset{
-mathExe/.style={colback=blue!10!bgColor, frame empty, colupper=textColor},
-progExe/.style={colback=orange!10!bgColor, frame empty, colupper=textColor},
+mathExe/.style={colback=mathExeBgColor, frame empty, colupper=textColor},
+progExe/.style={colback=progExeBgColor, frame empty, colupper=textColor},
+myres/.style={colback=textColor!3!bgColor, frame empty, colupper=textColor},
 }
 % \newtcbtheorem[number within=section]{exercise}{Exercise}{mytheoremstyle}{exe}
 
@@ -89,6 +96,7 @@ is called the \emph{sample average}.
 What are the mean and variance of $\Xbar_n$?
 To find them, we will use the following result.
 
+\begin{tcolorbox}[myres]
 \begin{theorem}
 \label[theorem]{thm:randvar-scaling}
 For any real numbers $a$ and $b$, and random variable $Z$, we have
@@ -97,6 +105,7 @@ For any real numbers $a$ and $b$, and random variable $Z$, we have
 & \Var[aZ+b] &= a^2\Var[Z]
 \end{align*}
 \end{theorem}
+\end{tcolorbox}
 
 \begin{figure}[!htb]
 \centering
@@ -164,6 +173,7 @@ Here it's not so easy to see how $S_n$ might be distributed.
 The following result can help us find $\Xbar_n$
 without first finding out the distribution of $S_n$.
 
+\begin{tcolorbox}[myres]
 \begin{theorem}
 \label[theorem]{thm:randvar-lincomb}
 Let $Y_1, \ldots, Y_n$ be $n$ independent random variables.
@@ -173,6 +183,7 @@ Let $Z \defeq Y_1 + \ldots + Y_n$. Then
 & \Var[Z] = \sum_{i=1}^n \Var[Y_i].
 \end{align*}
 \end{theorem}
+\end{tcolorbox}
 
 % \begin{exercise}{}{exe:exp:mean-var}
 % \end{exercise}
@@ -204,8 +215,8 @@ Define
 Show that the probability density function of $Y_n$ is
 \[ f_{Y_n}(y) = \frac{\sqrt{n}}{(n-1)!}\left(n + y\sqrt{n}\right)^{n-1} \exp\left(-(n + y\sqrt{n})\right),
     \quad y \ge -\sqrt{n}. \]
-Hint:
-$F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.
+\textcolor{mathExeSec}{Hint:
+$F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.}
 \end{exercise}
 \end{tcolorbox}
 
@@ -221,10 +232,12 @@ how well the central limit theorem holds.
 Use \texttt{matplotlib.pyplot} to plot all of following functions in the same figure:
 \begin{enumerate}
 \item For $n \in \{1, 3, 10, 30, 100\}$, plot $f_{Y_n}(y)$ for $-4 \le y \le 4$.
-    ($f_{Y_n}(y)$ is $0$ for $y < -\sqrt{n}$.)
+    \\ \textcolor{progExeSec}{($Y_n$ is defined in \cref{exe:exp:y-distr}.
+    $f_{Y_n}(y)$ is $0$ for $y < -\sqrt{n}$.)}
 \item Plot the standard normal distribution's density function on the interval $[-4, 4]$ as a dashed line.
-    (You may use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
-    \texttt{scipy.stats.norm.pdf(x)}} to get the standard normal distribution's PDF at $x$.)
+    \textcolor{progExeSec}{(You may use
+    \texttt{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
+scipy.stats.norm}.pdf(x)} to get the standard normal distribution's PDF at $x$.)}
 \end{enumerate}
 Ensure your curves are properly labeled with a legend.
 \end{exercise}
@@ -252,8 +265,8 @@ The Pareto distribution is very important in reinsurance so we will study it clo
 \begin{exercise}
 Show that
 \begin{enumerate}[label=(\alph*)]
-\item A Pareto random variable is heavy-tailed.
-    \\ (Hint: you may want to use L'H\^opital's rule.)
+\item A Pareto random variable is heavy-tailed. \;
+    \textcolor{mathExeSec}{(Hint: L'H\^opital's rule.)}
 \item An exponential random variable with parameter $\alpha$ is not heavy-tailed.
 \end{enumerate}
 \end{exercise}
@@ -272,12 +285,220 @@ Let $X \sim \mathrm{Pareto}(\alpha)$.
 The Pareto distribution is closely related to the exponential distribution.
 Let $X \sim \mathrm{Pareto}(\alpha)$ and $Y = \ln(X)$.
 Show that $Y \sim \Exp(1/\alpha)$.
-\\ Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.
+\\ \textcolor{mathExeSec}{Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.}
 \end{exercise}
 \end{tcolorbox}
 
 Since the Pareto distribution may not have a finite mean or variance,
 the Central limit theorem is not applicable.
+
+\section{QQ plot}
+
+The quantile-quantile plot, also known as a QQ-plot, is a tool to visually compare two distributions.
+It can also be used to compare a dataset of samples to a known distribution.
+
+\subsection{QQ plots of two distributions}
+
+\begin{tcolorbox}[myres]
+\begin{definition}[Quantile function]
+\label{defn:quantile}
+The \emph{quantile function} of a distribution is, intuitively,
+the inverse of the cumulative distribution function.
+Formally, for any $p \in [0, 1]$ and any random variable $X$, its quantile at $p$,
+denoted as $Q_X(p)$, is the largest value $x$ such that $F_X(x) \le p$.
+In other words, $Q_X(p) \ge x$ if and only if $F_X(x) \le p$.
+\end{definition}
+\end{tcolorbox}
+
+\begin{tcolorbox}[myres]
+\begin{example}[Exponential distribution]
+Let $X \sim \Exp(\lambda)$. Then for any $p \in [0, 1]$,
+\[ F_X(x) \le p
+\iff 1 - e^{-\lambda x} \le p
+\iff e^{\lambda x} \le \frac{1}{1-p}
+\iff x \le \frac{1}{\lambda}\ln\left(\frac{1}{1-p}\right). \]
+Thus,
+\[ Q_X(p) = \frac{1}{\lambda}\ln\left(\frac{1}{1-p}\right). \]
+\end{example}
+\end{tcolorbox}
+
+Let $X$ and $Y$ be two random variables.
+The QQ plot of $Y$ w.r.t. $X$ is obtained by plotting the points
+$(Q_X(p), Q_Y(p))$ for all $p \in [0, 1]$.
+
+QQ plots can help us compare two distributions.
+The idea is that if their distributions are similar,
+then their quantile functions will be similar too,
+and so, the plot will be very close to the line $y = x$.
+
+QQ plots can also help us know if one random variable is a linear function of the other;
+in that case, the QQ plot will be a straight line because of the following result.
+
+\begin{tcolorbox}[myres]
+\begin{theorem}
+\label{thm:q-scale}
+Let $X$ be a random variable and $Y \defeq aX + b$.
+Then $Q_Y(p) = aQ_X(p) + b$.
+\end{theorem}
+\end{tcolorbox}
+\begin{proof}
+For any number $y$, we have
+\[ F_Y(y) = \Pr(Y \le y) = \Pr(X \le (y-b)/a) = F_X((y-b)/a). \]
+Hence, for any $p \in [0, 1]$, we have
+\begin{align*}
+Q_Y(p) \ge y &\iff F_Y(y) \le p \iff F_X((y-b)/a) \le p
+\\ &\iff Q_X(p) \ge (y-b)/a \iff aQ_X(p) + b \ge y.
+\end{align*}
+Hence, $Q_Y(p) = aQ_X(p) + b$ for all $p \in [0, 1]$.
+\end{proof}
+
+In \cref{fig:exp-vs-norm-qq} we have the QQ-plot of the standard normal distribution
+w.r.t.~the exponential distribution ($\lambda = 1$)
+
+\begin{figure}[!htb]
+\centering
+\includegraphics{expVsNormQQ.pdf}
+\caption{The blue line is the QQ plot of $Y \sim \Ncal(0, 1)$ w.r.t~$X \sim \Exp(1)$.
+The red dashed line is the equation $y = x - 1$.}
+\label{fig:exp-vs-norm-qq}
+\end{figure}
+
+\subsection{Tail Behavior from QQ plot}
+
+The QQ plot can tell us whether two distributions are roughly the same,
+but it help us in other ways too.
+By analyzing how the QQ plot differs from a straight line at the left and right ends of the plot,
+we can compare the tails of the two distributions.
+
+To do that, we first draw the \emph{reference line}.
+In a QQ plot of $Y$ w.r.t.~$X$, the reference line has the equation
+\[ y = \E[Y] + \sqrt{\frac{\Var[Y]}{\Var[X]}}(x - \E[X]). \]
+
+\begin{enumerate}
+\item When $Y = aX + b$, the reference line becomes $y = ax + b$.
+\item For the example in \cref{fig:exp-vs-norm-qq}, the reference line
+    has the equation $y = x-1$ and is drawn dashed red.
+\end{enumerate}
+
+In \cref{fig:exp-vs-norm-qq}, on the right side of the figure,
+the QQ plot curves downwards compared to the reference line.
+This means that as $p$ increases and gets closer to 1, $Q_X(p)$ grows faster than $Q_Y(p)$.
+Intuitively, when a distribution has a heavy right tail, we see more extreme (larger) values,
+which suggests that $Y$ has a lighter right tail than $X$.
+Indeed, $X$ has PDF $f_X(x) = e^{-x}$, and $Y$ has PDF $f_Y(x) \propto e^{-x^2/2}$.
+As $x$ grows large, $f_Y(x)$ becomes much smaller than $f_X(x)$,
+which tells us that $Y$ has a lighter right tail than $X$.
+We can see clearly in \cref{fig:exp-vs-norm}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics{expVsNorm.pdf}
+\caption{The blue curve is the PDF of $Y \sim \Ncal(0, 1)$.
+The red curve is the PDF of $X \sim \Exp(1)$.}
+\label{fig:exp-vs-norm}
+\end{figure}
+
+Let us now look at the left side of \cref{fig:exp-vs-norm-qq}.
+The QQ plot curves downwards compared to the reference line.
+This means that as $p$ decreases and gets closer to 0, $Q_Y(p)$ decreases much faster than $Q_X(p)$.
+Intuitively, when a distribution has a heavy left tail, we see more extreme (smaller) values,
+which suggests that $Y$ has a heavier left tail than $X$.
+Indeed, for $x < 0$, the PDF of $X$ is 0, and $Y$ has PDF $f_Y(x) \propto e^{-x^2/2}$,
+so $Y$ has a heavier left tail than $X$.
+
+Since $Y$ has a heavier left tail than $X$ and a lighter right tail than $Y$,
+we get that $Y$ is left skewed compared to $X$.
+
+Let us summarize our observations.
+
+\begin{tcolorbox}[myres]
+Let $X$ and $Y$ be random variables.
+In the QQ plot of $Y$ w.r.t.~$X$, compared to the reference line,
+\begin{enumerate}
+\item If the right end of the QQ plot
+    \begin{tightenum}
+    \item curves downwards, then $Y$ has a lighter right tail than $X$.
+    \item curves upwards, then $Y$ has a heavier right tail than $X$.
+    \end{tightenum}
+\item If the left end of the QQ plot
+    \begin{tightenum}
+    \item curves downwards, then $Y$ has a heavier left tail than $X$.
+    \item curves upwards, then $Y$ has a lighter left tail than $X$.
+    \end{tightenum}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[progExe]
+\begin{exercise}
+Let $X \sim \Ncal(0, 1)$ have the standard normal distribution.
+Let $Y \sim U(-1, 1)$ be uniformly distributed between $-1$ and $1$.
+\begin{enumerate}[label=(\alph*)]
+\item What is the quantile function of $Y$?
+\item Use \texttt{matplotlib.pyplot} to draw the QQ plot of $Y$ w.r.t.~$X$. Also plot the reference line.
+    Label the $x$ and $y$ axes of your plot (similar to \cref{fig:exp-vs-norm-qq}).
+    \textcolor{progExeSec}{You can use \texttt{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
+scipy.stats.norm}.ppf(x)} as the quantile function of $X$.}
+\item From the QQ plot, what can you say about the tails of $Y$
+    compared to the standard normal distribution and why?
+\end{enumerate}
+\end{exercise}
+\end{tcolorbox}
+
+\subsection{QQ plots of sampled data}
+
+Often, we don't know the distribution of a random variable, but we can observe samples from it,
+and use them to get an \emph{estimated QQ plot}.
+
+Suppose we observe $n$ samples from a distribution $\Dcal$.
+After sorting them in non-decreasing order, let
+$(y_1, y_2, \ldots, y_n)$ be the resulting sequence.
+We define the \emph{estimated quantile function} $\Qhat$ as follows:
+\begin{enumerate}
+\item Let $p_i \defeq \frac{i-1/2}{n}$ for all $i$ from 1 to $n$.
+\item Let $\Qhat(p_i) = y_i$ for all $i$ from 1 to $n$.
+\end{enumerate}
+
+Then we draw the estimated QQ plot w.r.t.~a random variable $X$ as follows:
+\begin{enumerate}
+\item Let $x_i \defeq Q_X(p_i)$ for all $i$ from 1 to $n$.
+\item Plot the points $(x_i, y_i)$ for all $i$ from 1 to $n$.
+\end{enumerate}
+
+We demonstrate this process in \cref{fig:exp-vs-norm-qqe}.
+We sample 1000 points from the standard normal distribution,
+and draw the estimated QQ plot w.r.t.~the exponential distribution with parameter 1.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics{expVsNormQQE.pdf}
+\caption{Estimated QQ plot of 1000 samples drawn from the standard normal distribution w.r.t.~$\Exp(1)$.
+Observe the similarity with \cref{fig:exp-vs-norm-qq}.}
+\label{fig:exp-vs-norm-qqe}
+\end{figure}
+
+Let us try to see if the Pareto distribution follows the Central limit theorem.
+To do so, we sample 1000 points from $\mathrm{Pareto}(3/2)$ and compute the average.
+We repeat this process 1000 times to obtain 1000 sample averages.
+If the central limit theorem holds here, then these sample averages would have a normal distribution,
+and a QQ plot w.r.t.~the standard normal distribution would give us a straight line.
+However, this does not happen, as seen in \cref{fig:pareto-mean-qqe}.
+Hence, the central limit theorem does not hold for $\mathrm{Pareto}(3/2)$.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics{paretoMeanQQE.pdf}
+\caption{Estimated QQ plot of 1000 sample averages of 1000 points drawn from $\mathrm{Pareto}(3/2)$
+w.r.t.~$\Ncal(0, 1)$. Note how the curve quickly starts jumping up as we move to the right.
+In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot to make it easier to see.}
+\label{fig:pareto-mean-qqe}
+\end{figure}
+
+\begin{tcolorbox}[mathExe]
+\begin{exercise}
+Why does the central limit theorem not hold for $\mathrm{Pareto}(3/2)$?
+\\ \textcolor{mathExeSec}{(Hint: recall the conditions for applying the central limit theorem.)}
+\end{exercise}
+\end{tcolorbox}
 
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
