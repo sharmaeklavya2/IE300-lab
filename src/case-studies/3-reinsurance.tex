@@ -10,7 +10,10 @@
 \tcbuselibrary{theorems, skins, breakable}
 \newtheorem{exercise}{Exercise}
 
-\tcbset{colback=textColor!5!bgColor, frame empty, colupper=textColor}
+\tcbset{
+mathExe/.style={colback=blue!10!bgColor, frame empty, colupper=textColor},
+progExe/.style={colback=orange!10!bgColor, frame empty, colupper=textColor},
+}
 % \newtcbtheorem[number within=section]{exercise}{Exercise}{mytheoremstyle}{exe}
 
 \title{IE 300 Case Study 3:\\Heavy-Tailed Distribution and Reinsurance Rate-Making}
@@ -173,7 +176,7 @@ Let $Z \defeq Y_1 + \ldots + Y_n$. Then
 
 % \begin{exercise}{}{exe:exp:mean-var}
 % \end{exercise}
-\begin{tcolorbox}
+\begin{tcolorbox}[mathExe]
 \begin{exercise}
 \label{exe:exp:mean-var}
 Show that
@@ -191,7 +194,7 @@ $\Xbar_n$ is distributed roughly as $\Ncal(1/\lambda, 1/(n\lambda^2))$.
 
 Let us try to verify the central limit theorem for $\Xbar_n$ numerically.
 
-\begin{tcolorbox}
+\begin{tcolorbox}[mathExe]
 \begin{exercise}
 \label{exe:exp:y-distr}
 It can be shown that the probability density function of $S_n$ is given by
@@ -201,7 +204,7 @@ Define
 Show that the probability density function of $Y_n$ is
 \[ f_{Y_n}(y) = \frac{\sqrt{n}}{(n-1)!}\left(n + y\sqrt{n}\right)^{n-1} \exp\left(-(n + y\sqrt{n})\right),
     \quad y \ge -\sqrt{n}. \]
-\textbf{Hint}:
+Hint:
 $F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.
 \end{exercise}
 \end{tcolorbox}
@@ -212,7 +215,7 @@ Since we found the true distribution of $Y_n$ in \cref{exe:exp:y-distr},
 let us plot it against the standard normal distribution to see
 how well the central limit theorem holds.
 
-\begin{tcolorbox}
+\begin{tcolorbox}[progExe]
 \begin{exercise}
 \label{exe:exp:y-plot}
 Use \texttt{matplotlib.pyplot} to plot all of following functions in the same figure:
@@ -220,7 +223,7 @@ Use \texttt{matplotlib.pyplot} to plot all of following functions in the same fi
 \item For $n \in \{1, 3, 10, 30, 100\}$, plot $f_{Y_n}(y)$ for $-4 \le y \le 4$.
     ($f_{Y_n}(y)$ is $0$ for $y < -\sqrt{n}$.)
 \item Plot the standard normal distribution's density function on the interval $[-4, 4]$ as a dashed line.
-    (You can use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
+    (You may use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
     \texttt{scipy.stats.norm.pdf(x)}} to get the standard normal distribution's PDF at $x$.)
 \end{enumerate}
 Ensure your curves are properly labeled with a legend.
@@ -231,6 +234,50 @@ In general, we can conclude that Central Limit Theorem tells us that the distrib
 an average tends to be Normal, even when the distribution from which the average is computed is non-Normal.
 However, there are certain cases in which the average deviates from Normal behavior.
 When does the Central Limit Theorem not hold?
+
+\subsection{Heavy-Tailed Distributions}
+
+Heavy-tailed distributions are probability distributions with a heavier tail than the exponential.
+We will see how the extremes produced by heavy-tailed distributions will corrupt the average
+so that an asymptotic behavior different from the Normal behavior is obtained.
+Formally, a random variable $X$ is said to have a heavy-tail if
+\[ \lim_{x \to \infty} \frac{e^{-\lambda x}}{1 - F(x)} = 0, \qquad \text{for all } \lambda > 0. \]
+
+Let us study the Pareto distribution. It has a single positive parameter $\alpha$,
+called the \emph{Pareto index}, and its probability density function is given by
+\[ f(x) = \alpha x^{-(\alpha + 1)}, \qquad x \ge 1. \]
+The Pareto distribution is very important in reinsurance so we will study it closely.
+
+\begin{tcolorbox}[mathExe]
+\begin{exercise}
+Show that
+\begin{enumerate}[label=(\alph*)]
+\item A Pareto random variable is heavy-tailed.
+    \\ (Hint: you may want to use L'H\^opital's rule.)
+\item An exponential random variable with parameter $\alpha$ is not heavy-tailed.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+Let $X \sim \mathrm{Pareto}(\alpha)$.
+\begin{enumerate}[label=(\alph*)]
+\item For what values of $\alpha$ does $\E[X]$ exist?
+    When it exists, what is its value?
+\item For what values of $\alpha$ do $\E[X]$ and $\Var[X]$ exist?
+    When they exist, what is $\Var[X]$'s value.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+The Pareto distribution is closely related to the exponential distribution.
+Let $X \sim \mathrm{Pareto}(\alpha)$ and $Y = \ln(X)$.
+Show that $Y \sim \Exp(1/\alpha)$.
+\\ Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.
+\end{exercise}
+\end{tcolorbox}
+
+Since the Pareto distribution may not have a finite mean or variance,
+the Central limit theorem is not applicable.
 
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
