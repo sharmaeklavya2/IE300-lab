@@ -8,7 +8,6 @@ from scipy.stats import binom, norm
 import matplotlib.pyplot as plt
 
 δ = 0.04
-
 COLOR1 = None
 COLOR2 = 'red'
 

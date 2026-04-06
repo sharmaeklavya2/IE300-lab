@@ -3,14 +3,18 @@
 \input{src/header.tex}
 
 \graphicspath{{../../build/case-studies/3-reinsurance-plots/}}
+\newcommand*{\Fbar}{\overline{F}}
+\newcommand*{\Fbarhat}{\widehat{\Fbar}}
 \newcommand*{\Xbar}{\overline{X}}
 \newcommand*{\Dcal}{\mathcal{D}}
 \newcommand*{\Ncal}{\mathcal{N}}
+\newcommand*{\ehat}{\widehat{e}}
 \newcommand*{\Qhat}{\widehat{Q}}
+\newcommand*{\Pihat}{\widehat{\Pi}}
 \DeclareMathOperator{\Exp}{Exp}
 
 \tcbuselibrary{theorems, skins, breakable}
-\newtheorem{exercise}{Exercise}
+\newtheorem{exercise}{Exercise}[section]
 
 \colorlet{mathExeBgColor}{blue!6!bgColor}
 \colorlet{progExeBgColor}{orange!10!bgColor}
@@ -256,9 +260,9 @@ so that an asymptotic behavior different from the Normal behavior is obtained.
 Formally, a random variable $X$ is said to have a heavy-tail if
 \[ \lim_{x \to \infty} \frac{e^{-\lambda x}}{1 - F(x)} = 0, \qquad \text{for all } \lambda > 0. \]
 
-Let us study the Pareto distribution. It has a single positive parameter $\alpha$,
-called the \emph{Pareto index}, and its probability density function is given by
-\[ f(x) = \alpha x^{-(\alpha + 1)}, \qquad x \ge 1. \]
+Let us study the Pareto distribution. It has a two positive parameters $z$ and $\alpha$,
+and its probability density function is given by
+\[ f(x) = \frac{\alpha z^{\alpha}}{x^{\alpha + 1}}, \qquad x \ge z. \]
 The Pareto distribution is very important in reinsurance so we will study it closely.
 
 \begin{tcolorbox}[mathExe]
@@ -275,16 +279,16 @@ Show that
 Let $X \sim \mathrm{Pareto}(\alpha)$.
 \begin{enumerate}[label=(\alph*)]
 \item For what values of $\alpha$ does $\E(X)$ exist?
-    When it exists, what is its value?
+    Express $\E(X)$ in terms of $\alpha$ when $\E(X)$ exists.
 \item For what values of $\alpha$ do $\E(X)$ and $\Var(X)$ exist?
-    When they exist, what is $\Var(X)$'s value.
+    Express $\Var(X)$ in terms of $\alpha$ when $\E(X)$ and $\Var(X)$ exist.
 \end{enumerate}
 \end{exercise}
 
 \begin{exercise}
 \label{exe:pareto-vs-exp}
 The Pareto distribution is closely related to the exponential distribution.
-Let $X \sim \mathrm{Pareto}(\alpha)$ and $Y = \ln(X)$.
+Let $X \sim \mathrm{Pareto}(z, \alpha)$ and $Y = \ln(X/z)$.
 Show that $Y \sim \Exp(1/\alpha)$.
 \\ \textcolor{mathExeSec}{Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.}
 \end{exercise}
@@ -511,13 +515,15 @@ There are two columns: year and amount (in euros).
 
 \begin{tcolorbox}[progExe]
 \begin{exercise}
+\label{exe:real-qq}
 We will create QQ plots using the \texttt{insurance.csv} data
 to learn about how the amounts are distributed.
 \begin{enumerate}
 \item Read \texttt{insurance.csv} and get the largest 270 amounts.
     Then apply the natural logarithm to each amount.
 \item Create QQ plots of this data (i.e., log of amounts) w.r.t~the exponential distribution
-    (with parameter 1) and the standard normal distribution.
+    with parameter 1 and the standard normal distribution.
+    \textcolor{progExeSec}{You are not required to draw the reference line.}
 \item Based on the QQ plots, which distribution does the data (i.e., log of amounts) fit better?
     Justify your answer.
 \end{enumerate}
@@ -527,6 +533,143 @@ then the original amounts follow a Pareto distribution (by \cref{exe:pareto-vs-e
 % then the original amounts follow a log-normal distribution.
 \end{exercise}
 \end{tcolorbox}
+
+\section{Mean Excess Function and Reinsurance}
+
+Reinsurance is an insurance policy purchased by an insurance company from another insurance company,
+known as the `reinsurer', as a means of risk management.
+It is a very common market practice when insurance companies
+undertake high risk profiles with potential catastrophic losses.
+A reinsurance agreement details the conditions upon which the reinsurer
+would pay a share of the claims incurred by the insurer
+and the reinsurer is paid a `reinsurance premium' by the insurer,
+which issues insurance policies to its own policyholders.
+% A diagram of cash flows among the participants in an insurance market can be found in Figure 9.
+
+A common form of reinsurance is the excess of loss (XL) reinsurance,
+where the insurer covers insurance claims from policyholders up to its \emph{retention level}
+and any amount beyond the retention level will be reimbursed by the reinsurer.
+For example, an insurance company might insure commercial property risks with
+policy limits up to \$9 million, and then buy reinsurance of \$4 million
+on top of their retention level of \$5 million.
+In this case a loss of \$6 million on that policy will result in
+the recovery of \$1 million from the reinsurer.
+
+\subsection{Excess Function}
+
+The modeling of the XL reinsurance relies on an important mathematical concept
+called the \emph{mean excess function}.
+Suppose a ceding insurer enters into an XL treaty with a retention level $t$.
+Let $X$ be a random variable governing the size of a particular policyholder's claim.
+After claim investigation, the ceding insurer will make the payment,
+and the reinsurer has to pay $X-t$ if $X > t$.
+Pricing actuaries from reinsurance companies would want to know the average cost of such claims,
+which is theoretically determined by the mean excess function
+\begin{equation}
+\label{eq:excess-defn}
+e_X(t) \defeq \E(X-t \mid X>t) = \E(X \mid X>t) - t.
+\end{equation}
+
+Given the distribution of $X$, how can we find $e_X(t)$?
+The following result is helpful.
+
+\begin{tcolorbox}[myres]
+\begin{theorem}
+\label{thm:excess-alt}
+For any random variable $X$ and a number $t$, we have
+\[ e_X(t) = \frac{\E(X\boolOne(X > t))}{\Pr(X > t)} - t. \]
+Here $\boolOne(A)$ is 1 if event $A$ is true and 0 otherwise.
+\end{theorem}
+\end{tcolorbox}
+\begin{proof}
+Let $Z \defeq \boolOne(X > t)$. Then
+\begin{align*}
+\E(XZ) &= \E(XZ \mid X > t)\Pr(X > t) + \E(XZ \mid X \le t)\Pr(X \le t)
+\\ &= \E(X \mid X > t)\Pr(X > t) = (t + e_X(t))\Pr(X > t).
+\qedhere \end{align*}
+\end{proof}
+
+\begin{tcolorbox}[mathExe]
+\begin{exercise}
+\label{exe:excess}
+Prove that
+\begin{enumerate}
+\item If $X \sim \Exp(\lambda)$, then for all $t \ge 0$, we have $e_X(t) = 1/\lambda$.
+\item If $X \sim \mathrm{Pareto}(z, \alpha)$ and $\alpha > 1$,
+    then for all $t \ge z$, we have $e_X(t) = t/(\alpha-1)$.
+\end{enumerate}
+\end{exercise}
+\end{tcolorbox}
+
+% In \cref{exe:excess}, we learned how to find the excess function of a distribution.
+% However, in practice, we often don't know the distribution; we only have samples from it.
+% Then we must \emph{estimate} the excess function from the samples.
+
+\subsection{Non-Parametric Estimators of the Fair Net Premium}
+
+If the policyholder submits a claim of $X$, and the retention level is $r$,
+the amount that the reinsurer would pay is
+\[ \begin{cases}X - r & \text{ if } X > r \\ 0 & \text{ otherwise}\end{cases}
+\quad=\quad (X - r)\boolOne(X > r) \quad=\quad \max(X - r, 0). \]
+The fair net premium, denoted by $\Pi(r)$, is the expected value of the above quantity. Thus,
+\begin{align}
+\Pi(r) &= \E(\max(X - r, 0)) = \E((X-r)\boolOne(X > r))
+    \label{eq:prem1}
+\\ &= \E(X - r \mid X > r)\Pr(X > r) = e_X(r)\Fbar_X(r).
+    \label{eq:prem2}
+\end{align}
+Here $\Fbar_X(r) \defeq 1 - F_X(r) = \Pr(X > r)$ is called the \emph{survival function}.
+
+Let $x_1, x_2, \ldots, x_n$ be the claim amounts.
+Assume that they are sorted in non-increasing order, i.e.,
+$x_1 \ge x_2 \ge \ldots \ge x_n$.
+Let us try to estimate $\Pi(r)$ using these claim amounts.
+
+Our first estimator is based on \cref{eq:prem1}:
+\[ \Pihat_1(r) \defeq \frac{1}{n}\sum_{i=1}^n \max(x_i - r, 0). \]
+
+Since reinsurance contracts are meant to transfer risks of catastrophic losses, claims of
+small and medium sizes provide no useful information for the valuation of reinsurance contracts.
+For example, a retention level of $r = 5,000,000$ euros is typical in practice,
+but only 12 observations from \texttt{insurance.csv} are above this limit.
+Hence, the \emph{effective sample size} for computing $\Pihat_1(r)$ is just 12.
+Thus, $\Pihat_1(r)$ is not a good estimator in this example.
+
+Another way we can estimate $\Pi(r)$ is based on \cref{eq:prem2}:
+we estimate $e_X(r)$ and $\Fbar_X(r)$ separately, and the multiply them.
+\begin{enumerate}
+\item We estimate $e_X(r)$ using \cref{eq:excess-defn}.
+    We collect all claims above the retention level, take their mean,
+    and then subtract the retention level. Call this estimator $\ehat(r)$
+    Formally, $\ehat(r) \defeq \mathrm{sum}(S)/|S| - r$,
+    where $S \defeq \{x_i: x_i > r, \,i \text{ from } 1 \text{ to } n\}$.
+\item $\Fbar_X(r) \defeq \Pr(X > r)$, so we estimate it as the proportion of
+    claims in the set $\{x_1, \ldots, x_n\}$ above the retention level.
+    Call this estimator $\Fbarhat(r)$.
+\end{enumerate}
+Finally, we define our new estimator of $\Pi(r)$ as
+$\Pihat_2(r) \defeq \ehat(r)\cdot\Fbarhat(r)$.
+
+Unfortunately, it turns out that $\Pihat_2(r)$ isn't a good estimator either,
+as we will see in the following exercise.
+
+\begin{tcolorbox}[mathExe]
+\begin{exercise}
+Show (using algebraic manipulation) that $\Pihat_1(r) = \Pihat_2(r)$,
+regardless of which claims dataset $\{x_1, \ldots, x_n\}$ we have.
+\end{exercise}
+\end{tcolorbox}
+
+\subsection{Parametric Estimator of the Fair Net Premium}
+
+$\Pihat_1$ was a bad estimator because we were essentially throwing away almost all data.
+Even though small claims are not relevant to reinsurance,
+they can help us understand the distribution of large claims.
+Pareto distribution often provides a good fit for the distribution of large claims,
+a fact that we observed in \cref{exe:real-qq} for \texttt{insurance.csv}.
+Hence, we should take advantage of this extra information extracted from the data set.
+
+We will use \cref{eq:prem2} to estimate $\Pi(r)$.
 
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}

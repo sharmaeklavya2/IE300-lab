@@ -34,6 +34,7 @@ hypertexnames=false,bookmarksnumbered=true,final
 \newcommand*{\Th}{^{\textrm{th}}}
 \newcommand*{\abs}[1]{\lvert #1 \rvert}
 \newcommand*{\defeq}{:=}
+\newcommand*{\boolOne}{\mathbf{1}}
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareMathOperator*{\Var}{Var}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -42,12 +43,12 @@ hypertexnames=false,bookmarksnumbered=true,final
 
 % theorems, lemmas, definitions
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
+\newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
-\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{remark}{Remark}[section]
 
 % wrap URLs
 \Urlmuskip=0mu plus 0.1mu
