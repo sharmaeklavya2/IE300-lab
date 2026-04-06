@@ -101,8 +101,8 @@ To find them, we will use the following result.
 \label[theorem]{thm:randvar-scaling}
 For any real numbers $a$ and $b$, and random variable $Z$, we have
 \begin{align*}
-\E[aZ+b] &= a\E[Z]
-& \Var[aZ+b] &= a^2\Var[Z]
+\E(aZ+b) &= a\E(Z)
+& \Var(aZ+b) &= a^2\Var(Z)
 \end{align*}
 \end{theorem}
 \end{tcolorbox}
@@ -115,9 +115,9 @@ For any real numbers $a$ and $b$, and random variable $Z$, we have
 \end{figure}
 
 Using \cref{thm:randvar-scaling}, we get
-\[ \E[\Xbar_n] = \E[S_n]/n = p, \quad \text{and} \]
-\[ \Var[\Xbar_n] = \Var\left[\frac{S_n}{n}\right] = \frac{\Var[S_n]}{n^2} = \frac{pq}{n}. \]
-Since $\E[\Xbar_n] = p$, $\Xbar_n$ is an unbiased estimator of $p$.
+\[ \E(\Xbar_n) = \E(S_n)/n = p, \quad \text{and} \]
+\[ \Var(\Xbar_n) = \Var\left(\frac{S_n}{n}\right) = \frac{\Var(S_n)}{n^2} = \frac{pq}{n}. \]
+Since $\E(\Xbar_n) = p$, $\Xbar_n$ is an unbiased estimator of $p$.
 Moreover, when $n$ is large, the variance of $\Xbar_n$ is small,
 so $\Xbar_n$ is a good estimator of $p$.
 
@@ -179,8 +179,8 @@ without first finding out the distribution of $S_n$.
 Let $Y_1, \ldots, Y_n$ be $n$ independent random variables.
 Let $Z \defeq Y_1 + \ldots + Y_n$. Then
 \begin{align*}
-\E[Z] &= \sum_{i=1}^n \E[Y_i],
-& \Var[Z] = \sum_{i=1}^n \Var[Y_i].
+\E(Z) &= \sum_{i=1}^n \E(Y_i),
+& \Var(Z) = \sum_{i=1}^n \Var(Y_i).
 \end{align*}
 \end{theorem}
 \end{tcolorbox}
@@ -192,8 +192,8 @@ Let $Z \defeq Y_1 + \ldots + Y_n$. Then
 \label{exe:exp:mean-var}
 Show that
 \begin{enumerate}[label=(\alph*)]
-\item $\E[\Xbar_n] = 1/\lambda$.
-\item $\Var[\Xbar_n] = 1/(n\lambda^2)$.
+\item $\E(\Xbar_n) = 1/\lambda$.
+\item $\Var(\Xbar_n) = 1/(n\lambda^2)$.
 \end{enumerate}
 \end{exercise}
 \end{tcolorbox}
@@ -211,7 +211,7 @@ Let us try to verify the central limit theorem for $\Xbar_n$ numerically.
 It can be shown that the probability density function of $S_n$ is given by
 \[ f_{S_n}(x) = \frac{\lambda^n}{(n-1)!}x^{n-1}e^{-\lambda x}, \quad x \ge 0. \]
 Define
-\[ Y_n \defeq \frac{\Xbar_n - \E[\Xbar_n]}{\sqrt{\Var[\Xbar_n]}} = \frac{\lambda S_n - n}{\sqrt{n}}. \]
+\[ Y_n \defeq \frac{\Xbar_n - \E(\Xbar_n)}{\sqrt{\Var(\Xbar_n)}} = \frac{\lambda S_n - n}{\sqrt{n}}. \]
 Show that the probability density function of $Y_n$ is
 \[ f_{Y_n}(y) = \frac{\sqrt{n}}{(n-1)!}\left(n + y\sqrt{n}\right)^{n-1} \exp\left(-(n + y\sqrt{n})\right),
     \quad y \ge -\sqrt{n}. \]
@@ -220,7 +220,7 @@ $F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n
 \end{exercise}
 \end{tcolorbox}
 
-By the central limit theorem, $\Xbar_n$ should be distributed approximately $\Ncal(\E[\Xbar_n], \Var[\Xbar_n])$.
+By the central limit theorem, $\Xbar_n$ should be distributed approximately $\Ncal(\E(\Xbar_n), \Var(\Xbar_n))$.
 Thus, $Y_n$ should be distributed approximately $\Ncal(0, 1)$.
 Since we found the true distribution of $Y_n$ in \cref{exe:exp:y-distr},
 let us plot it against the standard normal distribution to see
@@ -274,10 +274,10 @@ Show that
 \begin{exercise}
 Let $X \sim \mathrm{Pareto}(\alpha)$.
 \begin{enumerate}[label=(\alph*)]
-\item For what values of $\alpha$ does $\E[X]$ exist?
+\item For what values of $\alpha$ does $\E(X)$ exist?
     When it exists, what is its value?
-\item For what values of $\alpha$ do $\E[X]$ and $\Var[X]$ exist?
-    When they exist, what is $\Var[X]$'s value.
+\item For what values of $\alpha$ do $\E(X)$ and $\Var(X)$ exist?
+    When they exist, what is $\Var(X)$'s value.
 \end{enumerate}
 \end{exercise}
 
@@ -373,7 +373,7 @@ we can compare the tails of the two distributions.
 
 To do that, we first draw the \emph{reference line}.
 In a QQ plot of $Y$ w.r.t.~$X$, the reference line has the equation
-\[ y = \E[Y] + \sqrt{\frac{\Var[Y]}{\Var[X]}}(x - \E[X]). \]
+\[ y = \E(Y) + \sqrt{\frac{\Var(Y)}{\Var(X)}}(x - \E(X)). \]
 
 \begin{enumerate}
 \item When $Y = aX + b$, the reference line becomes $y = ax + b$.
