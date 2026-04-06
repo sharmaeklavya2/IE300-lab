@@ -282,6 +282,7 @@ Let $X \sim \mathrm{Pareto}(\alpha)$.
 \end{exercise}
 
 \begin{exercise}
+\label{exe:pareto-vs-exp}
 The Pareto distribution is closely related to the exponential distribution.
 Let $X \sim \mathrm{Pareto}(\alpha)$ and $Y = \ln(X)$.
 Show that $Y \sim \Exp(1/\alpha)$.
@@ -497,6 +498,33 @@ In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot t
 \begin{exercise}
 Why does the central limit theorem not hold for $\mathrm{Pareto}(3/2)$?
 \\ \textcolor{mathExeSec}{(Hint: recall the conditions for applying the central limit theorem.)}
+\end{exercise}
+\end{tcolorbox}
+
+Let us create a QQ plot using real data.
+
+\begin{tcolorbox}[myres]
+The dataset \texttt{insurance.csv} contains insurance claim data from a reinsurance company.
+It contains 371 automobile claims from 1988 to 2001 that are greater than 1,200,000 euro.
+There are two columns: year and amount (in euros).
+\end{tcolorbox}
+
+\begin{tcolorbox}[progExe]
+\begin{exercise}
+We will create QQ plots using the \texttt{insurance.csv} data
+to learn about how the amounts are distributed.
+\begin{enumerate}
+\item Read \texttt{insurance.csv} and get the largest 270 amounts.
+    Then apply the natural logarithm to each amount.
+\item Create QQ plots of this data (i.e., log of amounts) w.r.t~the exponential distribution
+    (with parameter 1) and the standard normal distribution.
+\item Based on the QQ plots, which distribution does the data (i.e., log of amounts) fit better?
+    Justify your answer.
+\end{enumerate}
+If the log of the amounts follow an exponential distribution,
+then the original amounts follow a Pareto distribution (by \cref{exe:pareto-vs-exp}).
+% If the log of the amounts follow a normal distribution,
+% then the original amounts follow a log-normal distribution.
 \end{exercise}
 \end{tcolorbox}
 
