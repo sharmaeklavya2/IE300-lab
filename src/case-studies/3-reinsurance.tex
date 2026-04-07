@@ -11,10 +11,13 @@
 \newcommand*{\ehat}{\widehat{e}}
 \newcommand*{\Qhat}{\widehat{Q}}
 \newcommand*{\Pihat}{\widehat{\Pi}}
+\newcommand*{\gammahat}{\widehat{\gamma}}
 \DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\Pareto}{Pareto}
 
 \tcbuselibrary{theorems, skins, breakable}
 \newtheorem{exercise}{Exercise}[section]
+\crefname{exercise}{Exercise}{Exercises}
 
 \colorlet{mathExeBgColor}{blue!6!bgColor}
 \colorlet{progExeBgColor}{orange!10!bgColor}
@@ -27,7 +30,7 @@ myres/.style={colback=textColor!3!bgColor, frame empty, colupper=textColor},
 }
 % \newtcbtheorem[number within=section]{exercise}{Exercise}{mytheoremstyle}{exe}
 
-\title{IE 300 Case Study 3:\\Heavy-Tailed Distribution and Reinsurance Rate-Making}
+\title{IE 300 Case Study 3:\\Heavy-Tailed Distributions and Reinsurance}
 \author{\empty}
 \date{\empty}
 
@@ -276,7 +279,7 @@ Show that
 \end{exercise}
 
 \begin{exercise}
-Let $X \sim \mathrm{Pareto}(\alpha)$.
+Let $X \sim \Pareto(\alpha)$.
 \begin{enumerate}[label=(\alph*)]
 \item For what values of $\alpha$ does $\E(X)$ exist?
     Express $\E(X)$ in terms of $\alpha$ when $\E(X)$ exists.
@@ -288,7 +291,7 @@ Let $X \sim \mathrm{Pareto}(\alpha)$.
 \begin{exercise}
 \label{exe:pareto-vs-exp}
 The Pareto distribution is closely related to the exponential distribution.
-Let $X \sim \mathrm{Pareto}(z, \alpha)$ and $Y = \ln(X/z)$.
+Let $X \sim \Pareto(z, \alpha)$ and $Y = \ln(X/z)$.
 Show that $Y \sim \Exp(1/\alpha)$.
 \\ \textcolor{mathExeSec}{Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.}
 \end{exercise}
@@ -482,17 +485,17 @@ Observe the similarity with \cref{fig:exp-vs-norm-qq}.}
 \end{figure}
 
 Let us try to see if the Pareto distribution follows the Central limit theorem.
-To do so, we sample 1000 points from $\mathrm{Pareto}(3/2)$ and compute the average.
+To do so, we sample 1000 points from $\Pareto(3/2)$ and compute the average.
 We repeat this process 1000 times to obtain 1000 sample averages.
 If the central limit theorem holds here, then these sample averages would have a normal distribution,
 and a QQ plot w.r.t.~the standard normal distribution would give us a straight line.
 However, this does not happen, as seen in \cref{fig:pareto-mean-qqe}.
-Hence, the central limit theorem does not hold for $\mathrm{Pareto}(3/2)$.
+Hence, the central limit theorem does not hold for $\Pareto(3/2)$.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics{paretoMeanQQE.pdf}
-\caption{Estimated QQ plot of 1000 sample averages of 1000 points drawn from $\mathrm{Pareto}(3/2)$
+\caption{Estimated QQ plot of 1000 sample averages of 1000 points drawn from $\Pareto(3/2)$
 w.r.t.~$\Ncal(0, 1)$. Note how the curve quickly starts jumping up as we move to the right.
 In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot to make it easier to see.}
 \label{fig:pareto-mean-qqe}
@@ -500,7 +503,7 @@ In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot t
 
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
-Why does the central limit theorem not hold for $\mathrm{Pareto}(3/2)$?
+Why does the central limit theorem not hold for $\Pareto(3/2)$?
 \\ \textcolor{mathExeSec}{(Hint: recall the conditions for applying the central limit theorem.)}
 \end{exercise}
 \end{tcolorbox}
@@ -527,10 +530,6 @@ to learn about how the amounts are distributed.
 \item Based on the QQ plots, which distribution does the data (i.e., log of amounts) fit better?
     Justify your answer.
 \end{enumerate}
-If the log of the amounts follow an exponential distribution,
-then the original amounts follow a Pareto distribution (by \cref{exe:pareto-vs-exp}).
-% If the log of the amounts follow a normal distribution,
-% then the original amounts follow a log-normal distribution.
 \end{exercise}
 \end{tcolorbox}
 
@@ -581,7 +580,7 @@ For any random variable $X$ and a number $t$, we have
 Here $\boolOne(A)$ is 1 if event $A$ is true and 0 otherwise.
 \end{theorem}
 \end{tcolorbox}
-\begin{proof}
+\begin{proof}[Proof sketch]
 Let $Z \defeq \boolOne(X > t)$. Then
 \begin{align*}
 \E(XZ) &= \E(XZ \mid X > t)\Pr(X > t) + \E(XZ \mid X \le t)\Pr(X \le t)
@@ -595,7 +594,7 @@ Let $Z \defeq \boolOne(X > t)$. Then
 Prove that
 \begin{enumerate}
 \item If $X \sim \Exp(\lambda)$, then for all $t \ge 0$, we have $e_X(t) = 1/\lambda$.
-\item If $X \sim \mathrm{Pareto}(z, \alpha)$ and $\alpha > 1$,
+\item If $X \sim \Pareto(z, \alpha)$ and $\alpha > 1$,
     then for all $t \ge z$, we have $e_X(t) = t/(\alpha-1)$.
 \end{enumerate}
 \end{exercise}
@@ -606,6 +605,7 @@ Prove that
 % Then we must \emph{estimate} the excess function from the samples.
 
 \subsection{Non-Parametric Estimators of the Fair Net Premium}
+\label{sec:non-parametric}
 
 If the policyholder submits a claim of $X$, and the retention level is $r$,
 the amount that the reinsurer would pay is
@@ -626,7 +626,10 @@ $x_1 \ge x_2 \ge \ldots \ge x_n$.
 Let us try to estimate $\Pi(r)$ using these claim amounts.
 
 Our first estimator is based on \cref{eq:prem1}:
-\[ \Pihat_1(r) \defeq \frac{1}{n}\sum_{i=1}^n \max(x_i - r, 0). \]
+\begin{equation}
+\label{eq:pihat1}
+\Pihat_1(r) \defeq \frac{1}{n}\sum_{i=1}^n \max(x_i - r, 0).
+\end{equation}
 
 Since reinsurance contracts are meant to transfer risks of catastrophic losses, claims of
 small and medium sizes provide no useful information for the valuation of reinsurance contracts.
@@ -665,15 +668,94 @@ regardless of which claims dataset $\{x_1, \ldots, x_n\}$ we have.
 $\Pihat_1$ was a bad estimator because we were essentially throwing away almost all data.
 Even though small claims are not relevant to reinsurance,
 they can help us understand the distribution of large claims.
-Pareto distribution often provides a good fit for the distribution of large claims,
-a fact that we observed in \cref{exe:real-qq} for \texttt{insurance.csv}.
-Hence, we should take advantage of this extra information extracted from the data set.
 
-We will use \cref{eq:prem2} to estimate $\Pi(r)$.
+Pareto distribution often provides a good fit for the distribution of large claims.
+Indeed, by combining the results of \cref{exe:real-qq,exe:pareto-vs-exp},
+we can infer that \texttt{insurance.csv} follows a Pareto distribution.
+What remains is estimating the parameters $z$ and $\alpha$ of this distribution.
+
+A well-known estimator of $1/\alpha$ was proposed by Hill \cite{hill1975simple}.
+The intuition behind this estimator follows from \cref{exe:real-qq,exe:pareto-vs-exp},
+that the mean excess function of the logarithm of a Pareto random variable is $1/\alpha$.
+Let $x_1, \ldots, x_n$ be samples from $\Pareto(z, \alpha)$ such that $x_1 \ge \ldots \ge x_n$.
+The Hill estimator for $1/\alpha$ (parametrized by $k \in \{1, \ldots, n-1\}$) is
+\[ \gammahat_k \defeq \frac{1}{k} \sum_{j=1}^k ln\left(\frac{x_j}{x_{k+1}}\right). \]
+The Hill estimator enjoys a high degree of popularity thanks to some nice theoretical properties,
+which we do not intend to discuss in this class.
+For example, it has been proven that the Hill estimator is a
+\href{https://en.wikipedia.org/wiki/Consistent_estimator}{consistent estimator} for $1/\alpha$.
+One should note that the Hill estimator is based on the $k+1$ largest observations,
+and for each choice of $k$ there would be an estimate of $1/\alpha$.
+Many researchers have developed strategies to determine the optimal $k$ under various statistical criteria.
+The discussion of such procedures can be quite evolved and hence is omitted here.
+
+\begin{tcolorbox}[progExe]
+\begin{exercise}
+\label{exe:hill}
+Suppose we pick $k = 95$ for \texttt{insurance.csv}.
+Compute the Hill estimator $\gammahat_k$.
+\end{exercise}
+\end{tcolorbox}
+
+To estimate the fair net premium $\Pi(r)$, we will use \cref{eq:prem2},
+i.e., we will estimate $e_X(r)$ and $\Fbar_X(r)$ separately,
+and then multiply them to get an estimate of $\Pi(r)$.
+By \cref{exe:excess}, we get that
+\[ e_X(r) = \frac{r}{\alpha - 1}. \]
+
+Estimating $\Fbar_X(r) \defeq \Pr(X > r)$ is not as straightforward.
+We could try estimating it like in \cref{sec:non-parametric}, i.e.,
+the proportion of claim amounts more than $r$, but we have already seen
+why this would be a bad idea: when $r$ is large,
+very few observations would count, so the estimator would be very noisy.
+However, if $r$ was small, this might have worked well.
+The trick here is to write
+\[ \Pr(X > r) = \frac{\Pr(X > r)}{\Pr(X > t)}\cdot\Pr(X > t). \]
+Then we can estimate $\Pr(X > t)$ as the fraction of claim amounts more than $t$.
+Since $X \sim \Pareto(z, \alpha)$, we get
+\[ \frac{\Pr(X > r)}{\Pr(X > t)}
+    = \frac{(z/r)^{\alpha}}{(z/t)^{\alpha}}
+    = \left(\frac{t}{r}\right)^{\alpha}. \]
+A good choice of $t$ is $x_{k+1}$.
+
+Finally, on combining all these observations, we get the following estimator for
+the fair net premium:
+
+\begin{tcolorbox}[myres]
+\begin{equation}
+\label{eq:pihat3}
+\Pihat_3(r) = \frac{r}{1/\gammahat_k - 1}
+    \cdot\left(\frac{x_{k+1}}{r}\right)^{1/\gammahat_k}
+    \cdot\left(\frac{k}{n}\right)
+\end{equation}
+\end{tcolorbox}
+
+\begin{tcolorbox}[progExe]
+\begin{exercise}
+\label{exe:pihat-compare}
+Compute $\Pihat_1(r)$ and $\Pihat_3(r)$ for the following values of $r$:
+$3 \times 10^6$,
+$3.5 \times 10^6$,
+$4 \times 10^6$,
+$5 \times 10^6$,
+$7.5 \times 10^6$.
+\end{exercise}
+\end{tcolorbox}
+
+Now you have completed a pricing exercise that an actuary would typically do for a
+reinsurance contract on luxury commodities.
+You can see that there is no `one-size-fits-all' magic formula for pricing a product.
+Keep in mind that each of the estimators we developed has its own merits and limitations.
+Observe from your solution to \cref{exe:pihat-compare} that
+the estimates of net premiums are close for small retention levels,
+as more data are used in all estimators.
+But they are far apart for high retention levels, due to the `low quality' results
+from the non-parametric statistics with limited sample data.
+An advanced knowledge of heavy-tailed distribution allows us to make better use of data
+and provide more trust-worthy solutions in this example,
+which would be very important for billion-dollar businesses like reinsurance.
 
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
-
-\cite{hill1975simple}
 
 \end{document}
