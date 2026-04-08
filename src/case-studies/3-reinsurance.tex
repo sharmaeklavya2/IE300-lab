@@ -42,7 +42,7 @@ myres/.style={colback=textColor!3!bgColor, frame empty, colupper=textColor},
 
 The purpose of this case study is to give a brief introduction to a heavy-tailed distribution
 and its distinct behaviors in contrast with familiar light-tailed distributions in standard texts.
-You will learn about QQ-plot, which is a popular tool for checking goodness-of-fit for
+You will learn about QQ plot, which is a popular tool for checking goodness-of-fit for
 a particular statistical model. You will also work on a real-life application of heavy-tailed
 distributions in reinsurance rate-making.
 
@@ -53,7 +53,7 @@ and every satellite and probe it sends to the outer space?
 These equipments are so expensive that typical insurers would not be able to cover on their own.
 Therefore, they can go to the reinsurance market, slide up the coverage and
 transfer partial coverage to reinsurers that exceed their financial capabilities.
-By the end of this case study, you will be able to learn basic principles of pricing a reinsurance contract.
+By the end of this case study, you will learn basic principles of pricing a reinsurance contract.
 
 \textbf{Learning objectives}:
 
@@ -61,7 +61,7 @@ By the end of this case study, you will be able to learn basic principles of pri
 \item Visualize the concepts in the Central Limit Theorem.
 \item Identify cases where the Central Limit Theorem does not apply.
 \item Reinforce the concept of cumulative distribution function.
-\item Understand why and how QQ-plot works for the assessment of goodness-of-fit.
+\item Understand why and how QQ plot works for the assessment of goodness-of-fit.
 \item Reinforce the concepts of conditional probability and conditional expectation.
 \item Apply basic integration technique to compute mean excess function.
 \item Learn about behaviors of a heavy-tailed distribution.
@@ -83,7 +83,7 @@ Suppose we are given a potentially biased coin, i.e.,
 a coin that may not have an equal chance of landing on a head or a tail.
 We would like to estimate the probability of getting a head.
 
-We can do so by counting the number of heads in a sequence of coin tosses.
+We can do so by tossing the coin many times and counting the number of heads.
 Suppose we toss the coin $n$ times. For every $i$ from 1 to $n$, let $X_i$ be a random variable:
 1 if the $i\Th$ coin shows heads and 0 otherwise.
 Let $p$ the probability of a head and $q=1-p$ be the probability of a tail.
@@ -151,20 +151,21 @@ We can see that as $n$ increases, the two curves match up quite well.
 \begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.8]{binom2.pdf}
-\caption{Probability mass function of $\Xbar_n$ for $p = 0.3$ vs normal distribution}
+\caption{For $p = 0.3$, the blue bars are $n$ times the probability mass function of $\Xbar_n$,
+and the red curve is the probability density function of the normal distribution $\Ncal(p, \frac{pq}{n})$.}
 \label{fig:binom2}
 \end{figure}
 
 \subsection{Exponential Random Variables}
 
-Let us now trying applying the Central limit theorem to the exponential distribution.
+Let us now try applying the Central limit theorem to the exponential distribution.
 Let $X_1$, \ldots, $X_n$ be $n$ independent random variables such that for
 all $i$ from $1$ to $n$, we have $X_i \sim \Exp(\lambda)$,
 i.e., $X_i$ is exponentially distributed with parameter $\lambda$.
 Recall that the probability density function of
 an exponential random variable with parameter $\lambda$ is
 \[ f(x) = \lambda e^{-\lambda x}, \quad x \ge 0, \]
-and the cumulative distribution function is
+the cumulative distribution function is
 \[ F(x) = 1 - e^{-\lambda x}, \quad x \ge 0, \]
 the mean is $1/\lambda$, and the variance is $1/\lambda^2$.
 
@@ -223,7 +224,8 @@ Show that the probability density function of $Y_n$ is
 \[ f_{Y_n}(y) = \frac{\sqrt{n}}{(n-1)!}\left(n + y\sqrt{n}\right)^{n-1} \exp\left(-(n + y\sqrt{n})\right),
     \quad y \ge -\sqrt{n}. \]
 \textcolor{mathExeSec}{Hint:
-$F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.}
+$F_{Y_n}(y) = \Pr(Y_n \le y) = \Pr(S_n \le (n + y\sqrt{n})/\lambda) = F_{S_n}((n + y\sqrt{n})/\lambda)$.
+Now differentiate both sides w.r.t.~$y$.}
 \end{exercise}
 \end{tcolorbox}
 
@@ -263,9 +265,11 @@ so that an asymptotic behavior different from the Normal behavior is obtained.
 Formally, a random variable $X$ is said to have a heavy-tail if
 \[ \lim_{x \to \infty} \frac{e^{-\lambda x}}{1 - F(x)} = 0, \qquad \text{for all } \lambda > 0. \]
 
-Let us study the Pareto distribution. It has a two positive parameters $z$ and $\alpha$,
+Let us study the Pareto distribution. It has two positive parameters $z$ and $\alpha$,
 and its probability density function is given by
 \[ f(x) = \frac{\alpha z^{\alpha}}{x^{\alpha + 1}}, \qquad x \ge z. \]
+Its cumulative distribution function is
+\[ F(x) = 1 - \left(\frac{z}{x}\right)^{\alpha}, \qquad x \ge z. \]
 The Pareto distribution is very important in reinsurance so we will study it closely.
 
 \begin{tcolorbox}[mathExe]
@@ -279,7 +283,7 @@ Show that
 \end{exercise}
 
 \begin{exercise}
-Let $X \sim \Pareto(\alpha)$.
+Let $X \sim \Pareto(z, \alpha)$.
 \begin{enumerate}[label=(\alph*)]
 \item For what values of $\alpha$ does $\E(X)$ exist?
     Express $\E(X)$ in terms of $\alpha$ when $\E(X)$ exists.
@@ -292,7 +296,7 @@ Let $X \sim \Pareto(\alpha)$.
 \label{exe:pareto-vs-exp}
 The Pareto distribution is closely related to the exponential distribution.
 Let $X \sim \Pareto(z, \alpha)$ and $Y = \ln(X/z)$.
-Show that $Y \sim \Exp(1/\alpha)$.
+Show that $Y \sim \Exp(\alpha)$.
 \\ \textcolor{mathExeSec}{Hint: Use the same trick as in the hint of \cref{exe:exp:y-distr}.}
 \end{exercise}
 \end{tcolorbox}
@@ -302,7 +306,7 @@ the Central limit theorem is not applicable.
 
 \section{QQ plot}
 
-The quantile-quantile plot, also known as a QQ-plot, is a tool to visually compare two distributions.
+The quantile-quantile plot, also known as a QQ plot, is a tool to visually compare two distributions.
 It can also be used to compare a dataset of samples to a known distribution.
 
 \subsection{QQ plots of two distributions}
@@ -331,11 +335,11 @@ Thus,
 \end{tcolorbox}
 
 Let $X$ and $Y$ be two random variables.
-The QQ plot of $Y$ w.r.t. $X$ is obtained by plotting the points
+The QQ plot of $Y$ w.r.t.~$X$ is obtained by plotting the points
 $(Q_X(p), Q_Y(p))$ for all $p \in [0, 1]$.
 
 QQ plots can help us compare two distributions.
-The idea is that if their distributions are similar,
+The idea is that if two distributions are similar,
 then their quantile functions will be similar too,
 and so, the plot will be very close to the line $y = x$.
 
@@ -360,13 +364,13 @@ Q_Y(p) \ge y &\iff F_Y(y) \le p \iff F_X((y-b)/a) \le p
 Hence, $Q_Y(p) = aQ_X(p) + b$ for all $p \in [0, 1]$.
 \end{proof}
 
-In \cref{fig:exp-vs-norm-qq} we have the QQ-plot of the standard normal distribution
+In \cref{fig:exp-vs-norm-qq} we have the QQ plot of the standard normal distribution
 w.r.t.~the exponential distribution ($\lambda = 1$)
 
 \begin{figure}[!htb]
 \centering
 \includegraphics{expVsNormQQ.pdf}
-\caption{The blue line is the QQ plot of $Y \sim \Ncal(0, 1)$ w.r.t~$X \sim \Exp(1)$.
+\caption{The blue line is the QQ plot of $Y \sim \Ncal(0, 1)$ w.r.t.~$X \sim \Exp(1)$.
 The red dashed line is the equation $y = x - 1$.}
 \label{fig:exp-vs-norm-qq}
 \end{figure}
@@ -374,7 +378,7 @@ The red dashed line is the equation $y = x - 1$.}
 \subsection{Tail Behavior from QQ plot}
 
 The QQ plot can tell us whether two distributions are roughly the same,
-but it help us in other ways too.
+but it can help us in other ways too.
 By analyzing how the QQ plot differs from a straight line at the left and right ends of the plot,
 we can compare the tails of the two distributions.
 
@@ -394,9 +398,9 @@ This means that as $p$ increases and gets closer to 1, $Q_X(p)$ grows faster tha
 Intuitively, when a distribution has a heavy right tail, we see more extreme (larger) values,
 which suggests that $Y$ has a lighter right tail than $X$.
 Indeed, $X$ has PDF $f_X(x) = e^{-x}$, and $Y$ has PDF $f_Y(x) \propto e^{-x^2/2}$.
-As $x$ grows large, $f_Y(x)$ becomes much smaller than $f_X(x)$,
+As $x$ grows large, $e^{-x^2/2}$ becomes much smaller than $e^{-x}$,
 which tells us that $Y$ has a lighter right tail than $X$.
-We can see clearly in \cref{fig:exp-vs-norm}.
+We can clearly compare the thickness of the tails in \cref{fig:exp-vs-norm}.
 
 \begin{figure}[!htb]
 \centering
@@ -420,7 +424,7 @@ we get that $Y$ is left skewed compared to $X$.
 Let us summarize our observations.
 
 \begin{tcolorbox}[myres]
-Let $X$ and $Y$ be random variables.
+Let $X$ and $Y$ be any two random variables.
 In the QQ plot of $Y$ w.r.t.~$X$, compared to the reference line,
 \begin{enumerate}
 \item If the right end of the QQ plot
@@ -442,7 +446,9 @@ Let $X \sim \Ncal(0, 1)$ have the standard normal distribution.
 Let $Y \sim U(-1, 1)$ be uniformly distributed between $-1$ and $1$.
 \begin{enumerate}[label=(\alph*)]
 \item What is the quantile function of $Y$?
-\item Use \texttt{matplotlib.pyplot} to draw the QQ plot of $Y$ w.r.t.~$X$. Also plot the reference line.
+\item What is the equation of the reference line?
+\item Use \texttt{matplotlib.pyplot} to draw the QQ plot of $Y$ w.r.t.~$X$.
+    Also plot the reference line (dashed).
     Label the $x$ and $y$ axes of your plot (similar to \cref{fig:exp-vs-norm-qq}).
     \textcolor{progExeSec}{You can use \texttt{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
 scipy.stats.norm}.ppf(x)} as the quantile function of $X$.}
@@ -485,17 +491,17 @@ Observe the similarity with \cref{fig:exp-vs-norm-qq}.}
 \end{figure}
 
 Let us try to see if the Pareto distribution follows the Central limit theorem.
-To do so, we sample 1000 points from $\Pareto(3/2)$ and compute the average.
+To do so, we sample 1000 points from $\Pareto(1, 3/2)$ and compute the average.
 We repeat this process 1000 times to obtain 1000 sample averages.
 If the central limit theorem holds here, then these sample averages would have a normal distribution,
 and a QQ plot w.r.t.~the standard normal distribution would give us a straight line.
 However, this does not happen, as seen in \cref{fig:pareto-mean-qqe}.
-Hence, the central limit theorem does not hold for $\Pareto(3/2)$.
+Thus, we observe that the central limit theorem does not hold for $\Pareto(1, 3/2)$.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics{paretoMeanQQE.pdf}
-\caption{Estimated QQ plot of 1000 sample averages of 1000 points drawn from $\Pareto(3/2)$
+\caption{Estimated QQ plot of 1000 sample averages of 1000 points drawn from $\Pareto(1, 3/2)$
 w.r.t.~$\Ncal(0, 1)$. Note how the curve quickly starts jumping up as we move to the right.
 In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot to make it easier to see.}
 \label{fig:pareto-mean-qqe}
@@ -503,7 +509,7 @@ In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot t
 
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
-Why does the central limit theorem not hold for $\Pareto(3/2)$?
+Why does the central limit theorem not hold for $\Pareto(1, 3/2)$?
 \\ \textcolor{mathExeSec}{(Hint: recall the conditions for applying the central limit theorem.)}
 \end{exercise}
 \end{tcolorbox}
@@ -524,9 +530,9 @@ to learn about how the amounts are distributed.
 \begin{enumerate}
 \item Read \texttt{insurance.csv} and get the largest 270 amounts.
     Then apply the natural logarithm to each amount.
-\item Create QQ plots of this data (i.e., log of amounts) w.r.t~the exponential distribution
-    with parameter 1 and the standard normal distribution.
-    \textcolor{progExeSec}{You are not required to draw the reference line.}
+\item Create QQ plots of this data (i.e., log of amounts) w.r.t.~the exponential distribution
+    with parameter 1 and the standard normal distribution. Draw as scatter plots.
+    You are not required to draw the reference line.
 \item Based on the QQ plots, which distribution does the data (i.e., log of amounts) fit better?
     Justify your answer.
 \end{enumerate}
@@ -592,8 +598,9 @@ Let $Z \defeq \boolOne(X > t)$. Then
 \begin{exercise}
 \label{exe:excess}
 Prove that
-\begin{enumerate}
+\begin{enumerate}[label=(\alph*)]
 \item If $X \sim \Exp(\lambda)$, then for all $t \ge 0$, we have $e_X(t) = 1/\lambda$.
+    \\ \textcolor{mathExeSec}{(Hint: you may want to use \emph{integration by parts}.)}
 \item If $X \sim \Pareto(z, \alpha)$ and $\alpha > 1$,
     then for all $t \ge z$, we have $e_X(t) = t/(\alpha-1)$.
 \end{enumerate}
@@ -611,7 +618,10 @@ If the policyholder submits a claim of $X$, and the retention level is $r$,
 the amount that the reinsurer would pay is
 \[ \begin{cases}X - r & \text{ if } X > r \\ 0 & \text{ otherwise}\end{cases}
 \quad=\quad (X - r)\boolOne(X > r) \quad=\quad \max(X - r, 0). \]
-The fair net premium, denoted by $\Pi(r)$, is the expected value of the above quantity. Thus,
+The fair net premium\footnote{%
+Net premium refers to the pure cost of insurance coverage. It is used in contrast with gross premium,
+which includes commission, policy expenses, and other administrative costs.%
+}, denoted by $\Pi(r)$, is the expected value of the above quantity. Thus,
 \begin{align}
 \Pi(r) &= \E(\max(X - r, 0)) = \E((X-r)\boolOne(X > r))
     \label{eq:prem1}
@@ -643,7 +653,7 @@ we estimate $e_X(r)$ and $\Fbar_X(r)$ separately, and the multiply them.
 \begin{enumerate}
 \item We estimate $e_X(r)$ using \cref{eq:excess-defn}.
     We collect all claims above the retention level, take their mean,
-    and then subtract the retention level. Call this estimator $\ehat(r)$
+    and then subtract the retention level. Call this estimator $\ehat(r)$.
     Formally, $\ehat(r) \defeq \mathrm{sum}(S)/|S| - r$,
     where $S \defeq \{x_i: x_i > r, \,i \text{ from } 1 \text{ to } n\}$.
 \item $\Fbar_X(r) \defeq \Pr(X > r)$, so we estimate it as the proportion of
@@ -679,7 +689,7 @@ The intuition behind this estimator follows from \cref{exe:real-qq,exe:pareto-vs
 that the mean excess function of the logarithm of a Pareto random variable is $1/\alpha$.
 Let $x_1, \ldots, x_n$ be samples from $\Pareto(z, \alpha)$ such that $x_1 \ge \ldots \ge x_n$.
 The Hill estimator for $1/\alpha$ (parametrized by $k \in \{1, \ldots, n-1\}$) is
-\[ \gammahat_k \defeq \frac{1}{k} \sum_{j=1}^k ln\left(\frac{x_j}{x_{k+1}}\right). \]
+\[ \gammahat_k \defeq \frac{1}{k} \sum_{j=1}^k \ln\left(\frac{x_j}{x_{k+1}}\right). \]
 The Hill estimator enjoys a high degree of popularity thanks to some nice theoretical properties,
 which we do not intend to discuss in this class.
 For example, it has been proven that the Hill estimator is a
@@ -687,7 +697,7 @@ For example, it has been proven that the Hill estimator is a
 One should note that the Hill estimator is based on the $k+1$ largest observations,
 and for each choice of $k$ there would be an estimate of $1/\alpha$.
 Many researchers have developed strategies to determine the optimal $k$ under various statistical criteria.
-The discussion of such procedures can be quite evolved and hence is omitted here.
+The discussion of such strategies can be quite involved and hence is omitted here.
 
 \begin{tcolorbox}[progExe]
 \begin{exercise}
@@ -733,12 +743,16 @@ the fair net premium:
 \begin{tcolorbox}[progExe]
 \begin{exercise}
 \label{exe:pihat-compare}
-Compute $\Pihat_1(r)$ and $\Pihat_3(r)$ for the following values of $r$:
+For \texttt{insurance.csv},
+compute $\Pihat_1(r)$ and $\Pihat_3(r)$ for the following values of $r$:
 $3 \times 10^6$,
 $3.5 \times 10^6$,
 $4 \times 10^6$,
 $5 \times 10^6$,
 $7.5 \times 10^6$.
+Set $k=95$ and use the Hill estimator from \cref{exe:hill}.
+Write your answers with two decimal places, i.e.,
+round the premiums to the nearest cent.
 \end{exercise}
 \end{tcolorbox}
 

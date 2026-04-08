@@ -6,6 +6,7 @@ import math
 import numpy as np
 from scipy.stats import binom, norm
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 δ = 0.04
 COLOR1 = None
@@ -37,34 +38,14 @@ def binomPlot(nList: list[int], p: float, normalize: bool, nRows: int, nCols: in
     fig.savefig(outFile)
 
 
-def gammaPlot(nList: list[int], nRows: int, nCols: int, outFile: str) -> None:
-    assert len(nList) == nRows * nCols
-    fig, axes = plt.subplots(nRows, nCols, figsize=(nCols*2.7, nRows*2.1))
-    axes = axes.flatten()
-    xn = np.linspace(-4, 4, 101)
-    yn = norm.pdf(xn)
-    for ax, n in zip(axes, nList):
-        r = np.sqrt(n)
-        x = np.linspace(-min(r, 4), 4, 101)
-        s = n + x * r
-        y = (r/math.gamma(n)) * np.pow(s, n-1) * np.exp(-s)
-
-        ax.set_title(f'$n = {n}$')
-        ax.set_xlim(-4, 4)
-        ax.set_ylim(-δ, 1+δ)
-        ax.plot(xn, yn, linestyle='--', color=COLOR2)
-        ax.plot(x, y, color=COLOR1)
-    fig.tight_layout()
-    fig.subplots_adjust(wspace=0.25, hspace=0.4)
-    fig.savefig(outFile)
-
-
 def comparePlot(x, y, xstd, ystd, outFile: str | None, *,
         xTitle: str | None = None, yTitle: str | None = None,
+        updater = None,
         label: str | None = None, stdLabel: str | None = None,
-        scatter: bool = False, ylims: tuple[float, float] | None = None,
+        scatter: bool = False,
+        figsize: tuple[float, float] = (4, 3),
         ) -> None:
-    fig, ax = plt.subplots(figsize=(4, 3))
+    fig, ax = plt.subplots(figsize=figsize)
     if xstd is not None and ystd is not None:
         ax.plot(xstd, ystd, linestyle='--', color=COLOR2, label=stdLabel)
     if scatter:
@@ -75,10 +56,10 @@ def comparePlot(x, y, xstd, ystd, outFile: str | None, *,
         ax.set_xlabel(xTitle)
     if yTitle:
         ax.set_ylabel(yTitle)
+    if updater is not None:
+        updater(fig, ax)
     if label and stdLabel:
         ax.legend(loc="upper right")
-    if ylims:
-        ax.set_ylim(*ylims)
     fig.tight_layout()
     if outFile is None:
         plt.show()
@@ -95,18 +76,17 @@ def main():
     os.makedirs(args.out_dir, exist_ok=True)
     os.chdir(args.out_dir)
     plt.style.use('seaborn-v0_8-whitegrid')
+
     binomPlot(nList=[1, 2, 3, 10, 20, 50], p=0.3, normalize=False,
         nRows=2, nCols=3, outFile='binom1.pdf')
     binomPlot(nList=[1, 3, 10, 30, 100, 300], p=0.3, normalize=True,
         nRows=2, nCols=3, outFile='binom2.pdf')
-    # gammaPlot(nList=[1, 2, 3, 5, 10, 100], nRows=3, nCols=2, outFile='gamma.pdf')
 
     n = 200
     p = np.arange(n) / n
     x = -np.log(1-p)
     y = norm.ppf(p)
-    ystd = x - 1
-    comparePlot(x, y, x, ystd, 'expVsNormQQ.pdf',
+    comparePlot(x, y, x, x-1, 'expVsNormQQ.pdf',
         xTitle='exponential quantiles', yTitle='normal quantiles')
 
     xstd = np.linspace(0, 4, 101)
@@ -118,16 +98,6 @@ def main():
     comparePlot(x, y, xstd, ystd, 'expVsNorm.pdf',
         stdLabel='Exp(1)', label='N(0, 1)')
 
-    """
-    n = 200
-    p = np.arange(1, n+1) / n
-    x = -np.log(1-p)
-    y = p
-    ystd = 0.5 + (x - 1)/np.sqrt(12)
-    comparePlot(x, y, x, ystd, 'expVsUnifQQ.pdf',
-        xTitle='exponential quantiles', yTitle='uniform quantiles')
-    """
-
     rng = np.random.default_rng(seed=args.seed)
 
     n = 1000
@@ -136,9 +106,12 @@ def main():
     p = (np.arange(n) + 0.5)/n
     x = -np.log(1-p)
     xstd = np.array([np.min(x), np.max(x)])
-    ystd = xstd - 1
-    comparePlot(x, y, xstd, ystd, 'expVsNormQQE.pdf', scatter=True,
-        xTitle='exponential quantiles', yTitle='sampled normal quantiles')
+    def upd1(_, ax):
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.set_ylim(-4, 4.5)
+    comparePlot(x, y, xstd, xstd-1, 'expVsNormQQE.pdf', scatter=True, figsize=(5, 3),
+        updater=upd1, xTitle='exponential quantiles', yTitle='sampled normal quantiles')
 
     n = 1000
     mat = rng.pareto(a=1.5, size=(1000, n))
@@ -146,8 +119,10 @@ def main():
     y.sort()
     p = (np.arange(n) + 0.5)/n
     x = norm.ppf(p)
-    # comparePlot(x, y, None, None, None, scatter=True,
-    comparePlot(x, y, None, None, 'paretoMeanQQE.pdf', scatter=True, ylims=(-δ, 15),
+    def upd2(_, ax):
+        ax.set_ylim(-δ, 15)
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    comparePlot(x, y, None, None, 'paretoMeanQQE.pdf', scatter=True, updater=upd2,
         xTitle='normal quantiles', yTitle='sampled mean-of-pareto quantiles')
 
 
