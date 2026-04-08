@@ -193,8 +193,6 @@ Let $Z \defeq Y_1 + \ldots + Y_n$. Then
 \end{theorem}
 \end{tcolorbox}
 
-% \begin{exercise}{}{exe:exp:mean-var}
-% \end{exercise}
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
 \label{exe:exp:mean-var}
@@ -240,13 +238,12 @@ how well the central limit theorem holds.
 \label{exe:exp:y-plot}
 Use \texttt{matplotlib.pyplot} to plot all of following functions in the same figure:
 \begin{enumerate}
-\item For $n \in \{1, 3, 10, 30, 100\}$, plot $f_{Y_n}(y)$ for $-4 \le y \le 4$.
-    \\ \textcolor{progExeSec}{($Y_n$ is defined in \cref{exe:exp:y-distr}.
-    $f_{Y_n}(y)$ is $0$ for $y < -\sqrt{n}$.)}
+\item For $n \in \{1, 3, 10, 30, 100\}$, plot $f_{Y_n}(y)$ for $y \in [-\min(4, \sqrt{n}), 4]$.
+    \\ \textcolor{progExeSec}{($Y_n$ is defined in \cref{exe:exp:y-distr}.)}
 \item Plot the standard normal distribution's density function on the interval $[-4, 4]$ as a dashed line.
     \textcolor{progExeSec}{(You may use
     \texttt{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
-scipy.stats.norm}.pdf(x)} to get the standard normal distribution's PDF at $x$.)}
+\textcolor{progExeSec}{scipy.stats.norm}}.pdf(x)} to get the standard normal distribution's PDF at $x$.)}
 \end{enumerate}
 Ensure your curves are properly labeled with a legend.
 \end{exercise}
@@ -274,6 +271,7 @@ The Pareto distribution is very important in reinsurance so we will study it clo
 
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
+\label{exe:par:ht}
 Show that
 \begin{enumerate}[label=(\alph*)]
 \item A Pareto random variable is heavy-tailed. \;
@@ -283,6 +281,7 @@ Show that
 \end{exercise}
 
 \begin{exercise}
+\label{exe:par:ev}
 Let $X \sim \Pareto(z, \alpha)$.
 \begin{enumerate}[label=(\alph*)]
 \item For what values of $\alpha$ does $\E(X)$ exist?
@@ -304,12 +303,12 @@ Show that $Y \sim \Exp(\alpha)$.
 Since the Pareto distribution may not have a finite mean or variance,
 the Central limit theorem is not applicable.
 
-\section{QQ plot}
+\section{QQ Plot}
 
 The quantile-quantile plot, also known as a QQ plot, is a tool to visually compare two distributions.
 It can also be used to compare a dataset of samples to a known distribution.
 
-\subsection{QQ plots of two distributions}
+\subsection{QQ Plots of Two Distributions}
 
 \begin{tcolorbox}[myres]
 \begin{definition}[Quantile function]
@@ -375,7 +374,7 @@ The red dashed line is the equation $y = x - 1$.}
 \label{fig:exp-vs-norm-qq}
 \end{figure}
 
-\subsection{Tail Behavior from QQ plot}
+\subsection{Tail Behavior from QQ Plot}
 
 The QQ plot can tell us whether two distributions are roughly the same,
 but it can help us in other ways too.
@@ -442,6 +441,7 @@ In the QQ plot of $Y$ w.r.t.~$X$, compared to the reference line,
 
 \begin{tcolorbox}[progExe]
 \begin{exercise}
+\label{exe:unif-vs-norm-qq}
 Let $X \sim \Ncal(0, 1)$ have the standard normal distribution.
 Let $Y \sim U(-1, 1)$ be uniformly distributed between $-1$ and $1$.
 \begin{enumerate}[label=(\alph*)]
@@ -451,14 +451,14 @@ Let $Y \sim U(-1, 1)$ be uniformly distributed between $-1$ and $1$.
     Also plot the reference line (dashed).
     Label the $x$ and $y$ axes of your plot (similar to \cref{fig:exp-vs-norm-qq}).
     \textcolor{progExeSec}{You can use \texttt{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html}{%
-scipy.stats.norm}.ppf(x)} as the quantile function of $X$.}
+\textcolor{progExeSec}{scipy.stats.norm}}.ppf(x)} as the quantile function of $X$.}
 \item From the QQ plot, what can you say about the tails of $Y$
     compared to the standard normal distribution and why?
 \end{enumerate}
 \end{exercise}
 \end{tcolorbox}
 
-\subsection{QQ plots of sampled data}
+\subsection{QQ Plots of Sampled Data}
 
 Often, we don't know the distribution of a random variable, but we can observe samples from it,
 and use them to get an \emph{estimated QQ plot}.
@@ -509,6 +509,7 @@ In fact, we had to remove the rightmost point $(3.2905, 259.78)$ from the plot t
 
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
+\label{exe:pareto-clt}
 Why does the central limit theorem not hold for $\Pareto(1, 3/2)$?
 \\ \textcolor{mathExeSec}{(Hint: recall the conditions for applying the central limit theorem.)}
 \end{exercise}
@@ -530,8 +531,10 @@ to learn about how the amounts are distributed.
 \begin{enumerate}
 \item Read \texttt{insurance.csv} and get the largest 270 amounts.
     Then apply the natural logarithm to each amount.
-\item Create QQ plots of this data (i.e., log of amounts) w.r.t.~the exponential distribution
-    with parameter 1 and the standard normal distribution. Draw as scatter plots.
+\item Create two QQ plots for this data (i.e., log of amounts),
+    one w.r.t.~the exponential distribution with parameter 1,
+    and one w.r.t.~the standard normal distribution.
+    Draw as scatter plots. Label the $x$-axes appropriately.
     You are not required to draw the reference line.
 \item Based on the QQ plots, which distribution does the data (i.e., log of amounts) fit better?
     Justify your answer.
@@ -668,6 +671,7 @@ as we will see in the following exercise.
 
 \begin{tcolorbox}[mathExe]
 \begin{exercise}
+\label{exe:pihat1-eq-pihat2}
 Show (using algebraic manipulation) that $\Pihat_1(r) = \Pihat_2(r)$,
 regardless of which claims dataset $\{x_1, \ldots, x_n\}$ we have.
 \end{exercise}
@@ -703,7 +707,7 @@ The discussion of such strategies can be quite involved and hence is omitted her
 \begin{exercise}
 \label{exe:hill}
 Suppose we pick $k = 95$ for \texttt{insurance.csv}.
-Compute the Hill estimator $\gammahat_k$.
+Compute (and print) the Hill estimator $\gammahat_k$.
 \end{exercise}
 \end{tcolorbox}
 
@@ -751,7 +755,7 @@ $4 \times 10^6$,
 $5 \times 10^6$,
 $7.5 \times 10^6$.
 Set $k=95$ and use the Hill estimator from \cref{exe:hill}.
-Write your answers with two decimal places, i.e.,
+Print your answers with two decimal places, i.e.,
 round the premiums to the nearest cent.
 \end{exercise}
 \end{tcolorbox}
@@ -771,5 +775,68 @@ which would be very important for billion-dollar businesses like reinsurance.
 
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
+
+\newpage
+\appendix
+\section{Grading Rubric (50 points)}
+
+\subsection{Central Limit Theorem (18 points)}
+
+\begin{enumerate}
+\item \cref{exe:exp:mean-var} (2 points):
+    1 point for $\E(\Xbar_n)$,
+    1 point for $\Var(\Xbar_n)$.
+\item \cref{exe:exp:y-distr} (2 points)
+\item \cref{exe:exp:y-plot} (4 points):
+    1 point to plot the normal curve,
+    2 points to plot $f_{Y_n}$,
+    1 point for plot legend.
+\item \cref{exe:par:ht} (3 points):
+    2 points for (a),
+    1 point for (b).
+\item \cref{exe:par:ev} (5 points):
+    2 points for (a),
+    3 points for (b).
+\item \cref{exe:pareto-vs-exp} (2 points)
+\end{enumerate}
+
+\subsection{QQ Plot (16 points)}
+
+\begin{enumerate}
+\item \cref{exe:unif-vs-norm-qq} (7 points):
+    \begin{tightemize}
+    \item 1 point for (a).
+    \item 1 point for (b).
+    \item 4 points for (c):
+        2 points for the QQ plot,
+        1 point for the reference line,
+        1 point for plot labels.
+    \item 1 point for (d).
+    \end{tightemize}
+\item \cref{exe:pareto-clt} (1 point)
+\item \cref{exe:real-qq} (8 points):
+    \begin{tightemize}
+    \item 2 points to read and transform the data.
+    \item 5 points to plot:
+        3 points to compute the $(x, y)$ points,
+        and for each of the two plots, 0.5 point to plot and 0.5 point to label the $x$-axis.
+    \item 1 point to identify the better-fitting distribution.
+    \end{tightemize}
+\end{enumerate}
+
+\subsection{Mean Excess Function and Reinsurance (16 points)}
+
+\begin{enumerate}
+\item \cref{exe:excess} (6 points):
+    3 points for (a), 3 points for (b).
+\item \cref{exe:pihat1-eq-pihat2} (3 points):
+\item \cref{exe:hill} (4 points):
+    2 points to read and transform the data,
+    2 points to compute and print the hill estimator.
+\item \cref{exe:pihat-compare} (3 points):
+    1 point to compute $\Pihat_1(r)$,
+    1.5 points to compute $\Pihat_3(r)$,
+    0.5 points to print the outputs to 2 decimal places.
+\end{enumerate}
 
 \end{document}
