@@ -25,7 +25,7 @@ def myCmdRun(args: list[str], dryRun: bool) -> None:
         subprocess.run(args, check=True)
 
 
-def buildTex(inPath: str, outPath: str, *, buildDir: str | None, hasBib: bool, reps: int, dryRun: bool) -> bool:
+def buildTex(inPath: str, outPath: str, *, buildDir: str | None, hasBib: bool, reps: int, dryRun: bool, silent: bool) -> bool:
     inDir, inFname = os.path.split(inPath)
     jobName = os.path.splitext(inFname)[0]
 
@@ -34,6 +34,8 @@ def buildTex(inPath: str, outPath: str, *, buildDir: str | None, hasBib: bool, r
 
     os.environ['SOURCE_DATE_EPOCH'] = '0'
     pdflatexCmdLine = ['pdflatex'] + DEFAULT_TEX_ARGS
+    if silent:
+        pdflatexCmdLine.append('-interaction=batchmode')
     if buildDir is not None:
         pdflatexCmdLine.append(f'-output-directory={buildDir}')
     pdflatexCmdLine.append(inPath)
@@ -46,7 +48,8 @@ def buildTex(inPath: str, outPath: str, *, buildDir: str | None, hasBib: bool, r
     try:
         if hasBib:
             myCmdRun(pdflatexCmdLine, dryRun)
-            myCmdRun(['bibtex', auxPath], dryRun)
+            bibtexCmdLine = ['bibtex', '-terse', auxPath] if silent else ['bibtex', auxPath]
+            myCmdRun(bibtexCmdLine, dryRun)
         for _ in range(reps):
             myCmdRun(pdflatexCmdLine, dryRun)
     except subprocess.CalledProcessError as e:
@@ -80,11 +83,12 @@ def main() -> None:
         help='use bibtex?')
     parser.add_argument('--reps', type=int, default=DEFAULT_REPS,
         help=f'number of times to run pdflatex (after bibtex, default: {DEFAULT_REPS})')
+    parser.add_argument('--silent', action='store_true', default=False)
     parser.add_argument('--dry-run', action='store_true', default=False)
     args = parser.parse_args()
 
     succeeded = buildTex(args.in_path, args.out_path, buildDir=args.build_dir,
-        hasBib=args.has_bib, reps=args.reps, dryRun=args.dry_run)
+        hasBib=args.has_bib, reps=args.reps, dryRun=args.dry_run, silent=args.silent)
     sys.exit(1 - succeeded)
 
 
