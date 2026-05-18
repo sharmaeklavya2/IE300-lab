@@ -6,6 +6,9 @@ a course offered at the [ISE department at UIUC](https://ise.illinois.edu/).
 This repository is meant for instructors to use as a starting point to design their course materials.
 If you are a student, do not use this repository; consult the materials shared by your instructors instead.
 
+**Disclaimer**: these materials are not my original work. They are based on
+PDFs of unknown origin that have been passed down over the years from one instructor to the next.
+
 ## Pre-built PDFs
 
 * [Download zip](https://sharmaeklavya2.github.io/IE300-lab/output.zip)
@@ -24,11 +27,11 @@ The intermediate files (`.aux`, `.log`, the figures as PDFs) can be found in the
 
 ## Using Docker
 
-Drop into a docker environment by running
+You can drop into a docker environment by running
 
     docker build -t texlive-dev docker
     docker run -it -v $(pwd):/workspace texlive-dev
 
-Then build the PDF by running
+Then build the PDFs by running
 
     make
