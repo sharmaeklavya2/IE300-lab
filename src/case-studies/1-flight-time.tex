@@ -100,7 +100,7 @@ There are four types of time we are interested in:
 
 \begin{tcolorbox}[exeStyle]
 \begin{exercise}
-\label{exe:exp:mean-var}
+\label{exe:1}
 Write Python code to do the following:
 \begin{enumerate}[label=(\alph*)]
 \item Read the dataset (\texttt{flight-time.csv}), ignoring any rows without a recorded departure or arrival time.
@@ -118,6 +118,7 @@ Write Python code to do the following:
 
 \begin{tcolorbox}[exeStyle]
 \begin{exercise}
+\label{exe:2}
 Using \texttt{matplotlib}, create a bar graph for the time added of each airline.
 Be sure to label your axes and the plot.
 \end{exercise}
@@ -126,5 +127,36 @@ Be sure to label your axes and the plot.
 \nocite{nate2015how}
 \bibPrep{}  % \bibPrep is defined in header.tex
 \bibliography{src/bibdb}
+
+\newpage
+\appendix
+\section{Grading Rubric (40 points)}
+
+\subsection{Exercise \ref{exe:1} (30 points)}
+
+\begin{enumerate}[label=(\alph*)]
+\item Read and clean the data (12 points):
+    \begin{tightemize}
+    \item 3 points to correctly read \texttt{flight-time.csv}.
+    \item 3 points to remove rows with missing data.
+    \item 3 points to remove rows with incorrect flight time.
+    \item 3 points to print the number of observations.
+    \end{tightemize}
+\item Target flight time (4 points).
+\item Typical time (5 points).
+\item Time added and best airlines (9 points):
+    \begin{tightemize}
+    \item 6 points to compute the time added for each airline.
+    \item 3 points to print the best airlines.
+    \end{tightemize}
+\end{enumerate}
+
+\subsection{Exercise \ref{exe:2} (10 points)}
+
+\begin{tightemize}
+\item 6 points for the bar graph.
+\item 2 points to label the axes.
+\item 2 points to label the plot.
+\end{tightemize}
 
 \end{document}
