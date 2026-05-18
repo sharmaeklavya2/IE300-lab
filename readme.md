@@ -8,8 +8,8 @@ If you are a student, do not use this repository; consult the materials shared b
 
 ## Pre-built PDFs
 
-* [Download zip](https://sharmaeklavya2.github.io/IE300-lab/output.zip).
-* [Browse](https://sharmaeklavya2.github.io/IE300-lab/).
+* [Download zip](https://sharmaeklavya2.github.io/IE300-lab/output.zip)
+* [Browse](https://sharmaeklavya2.github.io/IE300-lab/)
 
 ## Contents of this repository
 
