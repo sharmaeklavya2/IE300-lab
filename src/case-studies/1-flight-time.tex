@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+
+\input{src/header.tex}
+
+\newcommand{\lori}{\ell_{\mathrm{ori}}}
+\newcommand{\ldes}{\ell_{\mathrm{des}}}
+
+\tcbuselibrary{theorems, skins, breakable}
+\newtheorem{exercise}{Exercise}
+\crefname{exercise}{Exercise}{Exercises}
+
+\tcbset{
+exeStyle/.style={colback=textColor!3!bgColor, frame empty, colupper=textColor},
+}
+% \newtcbtheorem[number within=section]{exercise}{Exercise}{mytheoremstyle}{exe}
+
+\title{IE 300 Case Study 1: Fastest Airlines}
+\author{\empty}
+\date{\empty}
+
+\begin{document}
+
+\maketitle
+%\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+%\section{Learning Objectives}
+
+This study aims to help you develop basic Python skills for data analysis.
+You will learn how to assess airlines based on historical flight data.
+%
+By the end of this case study, you will be able to:
+\begin{tightemize}
+\item Read data from csv files.
+\item Work with different data structures in Python.
+\item Clean data and perform calculations.
+\item Create basic visualizations using \texttt{matplotlib}.
+\end{tightemize}
+
+\section{How do we determine which airline is the ``fastest''?}
+
+One can define the \emph{duration} of a flight to be the difference between
+the scheduled arrival and departure times (after adjusting for timezone changes, if any),
+and compare flights across the same route based on these durations.
+But these durations are not always accurate. Airlines don't want to be labeled \emph{late},
+so they often pad their schedules, and so, report longer flight times.
+
+A different approach is to record \emph{actual} arrival and departure times, instead of scheduled times.
+But actual times can vary, because of weather, airport congestion, etc.
+So, given historic flight data, we would like to find how long a flight takes \emph{on average}.
+
+The dataset \texttt{flight-time.csv}, from the Bureau of Transportation Statistics,
+contains 743 observations of flights from ORD to LAX throughout November 2015.
+There are 10 columns in \texttt{flight-time.csv}, described in \cref{table:ft}.
+
+\begin{table}[htb]
+\centering
+\caption{Columns in \texttt{flight-time.csv}}
+\label{table:ft}
+\begin{tabular}{cll}
+\toprule
+\# & Column Name & Column Description
+\\ \midrule
+1 & Flight Date & Date of the flight (\texttt{mm/dd/yyyy})
+\\ 2 & Carrier & IATA Carrier Identification
+\\ 3 & Flight Number & Number assigned to the flight
+\\ 4 & Origin & Origin airport
+\\ 5 & Destination & Destination airport
+\\ 6 & Departure Time & Time of departure (\texttt{hhmm})
+\\ 7 & Departure Delay & Difference between scheduled and actual departure time (minutes)
+\\ 8 & Arrival Time & Time of arrival (\texttt{hhmm})
+\\ 9 & Arrival Delay & Difference between scheduled and actual arrival time (minutes)
+\\ 10 & Flight Time & Difference between actual departure and arrival time (minutes)
+\\ \bottomrule
+\end{tabular}
+\end{table}
+
+There are four types of time we are interested in:
+\begin{enumerate}
+\item \emph{Average Flight Time}:
+    The average time an airline takes to complete the route.
+\item \emph{Target Flight Time} (TFT):
+    An estimate of how long a flight should take based on distance and direction of travel.
+    For this case study, we will use a simple formula that does not
+    include complex variables like wind speed, jetstreams, etc.
+    We will calculate it based on the spherical distance (great circle distance).
+    Let $\lori$ and $\ldes$ be the longitudes of the origin and destination, respectively,
+    and $d$ be the spherical distance between two points (in miles).
+    Assuming a constant velocity and an average time of 20 minutes to runway time,
+    define the target flight time (in minutes) as
+    \[ \mathrm{TFT} = 0.117 \times d + 0.517 \times (\lori - \ldes) + 20. \]
+\item \emph{Typical Time}:
+    The target flight time, plus the average delay associated with the origin airport,
+    plus the average delay associated with the destination airport.
+\item \emph{Time Added}:
+    The measure of an airline's performance is the average flight time minus the typical time.
+    This difference is called \emph{time added}.
+    The lower the time added, the faster the airline is on that particular route.
+\end{enumerate}
+
+\begin{tcolorbox}[exeStyle]
+\begin{exercise}
+\label{exe:exp:mean-var}
+Write Python code to do the following:
+\begin{enumerate}[label=(\alph*)]
+\item Read the dataset (\texttt{flight-time.csv}), ignoring any rows without a recorded departure or arrival time.
+    Also, some times were recorded incorrectly, so ignore rows where the flight time is less than 230 minutes.
+    Calculate and print the number of remaining observations in the dataset.
+\item Calculate and print the target flight time with $d = 1741.16$ miles,
+    $\lori = -87.90^{\circ}$ and $\ldes = -118.41^{\circ}$.
+    (These values are for the route from ORD to LAX.)
+\item Calculate and print the typical time of this route.
+\item Calculate and print the time added for each airline.
+    Which airline has the lowest time added?
+\end{enumerate}
+\end{exercise}
+\end{tcolorbox}
+
+\begin{tcolorbox}[exeStyle]
+\begin{exercise}
+Using \texttt{matplotlib}, create a bar graph for the time added of each airline.
+Be sure to label your axes and the plot.
+\end{exercise}
+\end{tcolorbox}
+
+\nocite{nate2015how}
+\bibPrep{}  % \bibPrep is defined in header.tex
+\bibliography{src/bibdb}
+
+\end{document}
