@@ -13,8 +13,11 @@ $(BCS)/3-reinsurance-plots/binom1.pdf: $(SCS)/3-reinsurance-plots.py
 $(OCS)/3-reinsurance.pdf: $(SCS)/3-reinsurance.tex $(COMMON_FILES) $(BCS)/3-reinsurance-plots/binom1.pdf
 	./buildTex.py $< $@ --has-bib $(EXTRA_FLAGS) --build-dir=$(BCS)
 
-.PHONY: index
+LINK_DATASETS = rm -f output/datasets && ln -sf ../datasets output/datasets
+.PHONY: index zip
 index:
-	rm -f output/datasets
-	ln -sf ../datasets output/datasets
+	$(LINK_DATASETS)
 	./auto-index.py output
+zip:
+	$(LINK_DATASETS)
+	zip -r output/output.zip output/ -x "*.DS_Store" -x "*.db" -x "__MACOSX/*" -x "*.html" -x "*.css" -x "*.zip" -x "*.tgz"

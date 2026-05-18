@@ -6,9 +6,10 @@ a course offered at the [ISE department at UIUC](https://ise.illinois.edu/).
 This repository is meant for instructors to use as a starting point to design their course materials.
 If you are a student, do not use this repository; consult the materials shared by your instructors instead.
 
-## Download pre-built PDFs
+## Pre-built PDFs
 
-See <https://sharmaeklavya2.github.io/IE300-lab/>.
+* [Download zip](https://sharmaeklavya2.github.io/IE300-lab/output.zip).
+* [Browse](https://sharmaeklavya2.github.io/IE300-lab/).
 
 ## Contents of this repository
 
