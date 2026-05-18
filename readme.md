@@ -21,3 +21,14 @@ If you are on Linux/macOS, run `make` to create the case study PDFs.
 (You can find out which commands it will run using `make --dry-run`. Also try `SILENT=1 make`.)
 It will output the case study PDFs in the `output` directory.
 The intermediate files (`.aux`, `.log`, the figures as PDFs) can be found in the `build` directory.
+
+## Using Docker
+
+Drop into a docker environment by running
+
+    docker build -t texlive-dev docker
+    docker run -it -v $(pwd):/workspace texlive-dev
+
+Then build the PDF by running
+
+    make
