@@ -3,7 +3,11 @@
 """Recursively generate an HTML index page for each directory."""
 
 import os
+from os.path import join as pjoin
 import argparse
+import shutil
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 IGNORES = set("""
 .git
@@ -11,6 +15,7 @@ IGNORES = set("""
 build
 __pycache__
 index.html
+index-style.css
 Thumbs.db
 Desktop.ini
 .DS_Store
@@ -70,6 +75,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('dir_path')
     args = parser.parse_args()
+    if os.path.realpath(args.dir_path) != os.path.realpath(ROOT_DIR):
+        shutil.copyfile(pjoin(ROOT_DIR, 'index-style.css'), pjoin(args.dir_path, 'index-style.css'))
     recurseOnDirs(args.dir_path, args.dir_path, generateIndex, 0)
 
 
