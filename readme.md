@@ -6,10 +6,9 @@ a course offered at the [ISE department at UIUC](https://ise.illinois.edu/).
 This repository is meant for instructors to use as a starting point to design their course materials.
 If you are a student, do not use this repository; consult the materials shared by your instructors instead.
 
-## Web access
+## Download pre-built PDFs
 
-You can find the case study PDFs at <https://sharmaeklavya2.github.io/IE300-lab/output/>,
-and the datasets referenced in them at <https://sharmaeklavya2.github.io/IE300-lab/datasets/>.
+See <https://sharmaeklavya2.github.io/IE300-lab/>.
 
 ## Contents of this repository
 

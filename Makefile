@@ -15,4 +15,6 @@ $(OCS)/3-reinsurance.pdf: $(SCS)/3-reinsurance.tex $(COMMON_FILES) $(BCS)/3-rein
 
 .PHONY: index
 index:
-	./auto-index.py .
+	rm -f output/datasets
+	ln -sf ../datasets output/datasets
+	./auto-index.py output
